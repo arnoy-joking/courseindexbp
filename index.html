@@ -1,0 +1,443 @@
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <title>
+   Biology 1st Paper - HSC 2026
+  </title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+  <style>
+   /* Custom scrollbar for the class list */
+    .scrollbar-thin::-webkit-scrollbar {
+      width: 6px;
+    }
+    .scrollbar-thin::-webkit-scrollbar-track {
+      background: #1e293b;
+      border-radius: 0.375rem;
+    }
+    .scrollbar-thin::-webkit-scrollbar-thumb {
+      background-color: #475569;
+      border-radius: 0.375rem;
+    }
+    /* For aspect ratio container */
+    .aspect-w-16 {
+      position: relative;
+      width: 100%;
+      padding-bottom: 56.25%;
+    }
+    .aspect-w-16 iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 0.375rem;
+    }
+    /* Scrollable class list height */
+    #classList {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    /* Selected class list item style */
+    .watchli.selected {
+      background-color: #000000;
+      color: #ffffff;
+    }
+  </style>
+ </head>
+ <body class="bg-slate-900 min-h-screen flex flex-col">
+  <!-- Header -->
+  <header class="bg-black flex items-center gap-2 px-4 py-3">
+   <img alt="Bondi Pathshala logo" class="h-8 w-auto" height="32" src="https://www.bondipathshala.com.bd/files/logo.png" width="auto"/>
+   <h1 class="text-white font-bold text-lg ml-2">
+    Biology 1st Paper - HSC 2026
+   </h1>
+  </header>
+  <!-- Main content -->
+  <main class="flex-1 p-4 flex flex-col md:flex-row md:gap-4">
+   <!-- Left content: video and pdf -->
+   <section aria-label="Live Class Section" class="bg-slate-800 rounded-lg p-4 flex flex-col w-full md:flex-1 md:order-1">
+    <h2 class="text-white font-semibold mb-4">
+     Live Class
+    </h2>
+    <div class="aspect-w-16 mb-4">
+     <iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" id="videoPlayer" src="https://www.youtube.com/embed/rP8LE1_gP34?rel=0&modestbranding=1&showinfo=0&controls=1" title="YouTube video player">
+     </iframe>
+    </div>
+    <a class="bg-black text-white rounded-md px-4 py-2 w-max flex items-center gap-2 hover:bg-gray-800 transition" href="https://www.bondipathshala.com.bd/pdf/20240819-1724009668-olLQlzVm.pdf" id="pdfDownload" target="_blank" rel="noopener noreferrer">
+     <i class="far fa-file-pdf">
+     </i>
+     Download PDF
+    </a>
+   </section>
+   <!-- Right content: class list -->
+   <aside aria-label="Class List Section" class="bg-slate-800 rounded-lg p-4 flex flex-col w-full mt-4 md:w-72 md:mt-0 md:order-2">
+    <button class="bg-black text-white rounded-md px-4 py-2 mb-4 flex items-center justify-center gap-2" type="button">
+     <i class="fas fa-plus">
+     </i>
+     Add New Class
+    </button>
+    <h3 class="text-white font-semibold mb-2">
+     Class List
+    </h3>
+    <ul class="scrollbar-thin space-y-1" id="classList" role="list" tabindex="0">
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="vylbU3GFmK4" data-npdf="20240525-1716657674-IVrmjDy0.pdf" tabindex="0">
+          Course Roadmap
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="0zDP1tRa_Rg" data-npdf="20240527-1716831877-G1BCFR3A.pdf" tabindex="0">
+          Basic Calculus Part-01
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="MEOX9DUGnHM" data-npdf="20240530-1717014224-ZcQItppI.pdf" tabindex="0">
+          Basic Calculus Part-02
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="0A_uR7cgz6o" data-npdf="20240602-1717273188-yPWNIZKo.pdf" tabindex="0">
+          ভেক্টর পর্ব-০১
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="IvHcZd-N-R8" data-npdf="20240604-1717444477-q4WOdXXM.pdf" tabindex="0">
+          ভেক্টর পর্ব-০২
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="IFS_rRMR_Rw" data-npdf="20240606-1717613653-bDXFuigc.pdf" tabindex="0">
+          ভেক্টর পর্ব-০৩
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="zZ3ZF4xOK50" data-npdf="20240613-1718273316-GjJPCZDx.pdf" tabindex="0">
+          ভেক্টর পর্ব-০৪
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="gmcIpu0XEMI" data-npdf="20240625-1719265797-tQNeUEdU.pdf" tabindex="0">
+          ভেক্টর পর্ব-০৫
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="jOywhzzraqE" data-npdf="20240627-1719430684-ZalntYC2.pdf" tabindex="0">
+          ভেক্টর পর্ব-০৬
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="WhfZmojIUtY" data-npdf="20240629-1719678055-kPEpLERk.pdf" tabindex="0">
+          ভেক্টর পর্ব-০৭
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="LyM9FiqUpKw" data-npdf="20240702-1719874283-KRSpu2B7.pdf" tabindex="0">
+          ভেক্টর পর্ব-০৮
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="-D14ShYTecI" data-npdf="20240704-1720036991-wBdjtGUE.pdf" tabindex="0">
+          ভেক্টর পর্ব-০৯
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="OCnLkCiR5ZY" data-npdf="20250321-1742499779-GwPYxsvB.pdf" tabindex="0">
+          ভেক্টর পর্ব-১০
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="PnaymqdGK_I" data-npdf="20240711-1720641347-fVm3uh5F.pdf" tabindex="0">
+          ভেক্টর পর্ব-১১
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="mNImFqFaEUU" data-npdf="20240714-1720899240-W1g7RfYY.pdf" tabindex="0">
+          ভেক্টর পর্ব-১২
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="jVfCnIg3tqE" data-npdf="20240818-1723919930-3fAQ77z2.pdf" tabindex="0">
+          ভেক্টর পর্ব - ১৩
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="6rbOpZfAdbk" data-npdf="20240820-1724103173-ZVYe71Xp.pdf" tabindex="0">
+          ভেক্টর পর্ব-১৪
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="Otx6FdWCuTo" data-npdf="20240822-1724273617-iuyiQjch.pdf" tabindex="0">
+          ভেক্টর পর্ব-১৫
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="hetd_SXnwVY" data-npdf="20240825-1724574942-0IfQe8fc.pdf" tabindex="0">
+          ভেক্টর পর্ব-১৬
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="qP0tgrgBtbo" data-npdf="20240827-1724746385-QNQPKWU6.pdf" tabindex="0">
+          ভেক্টর পর্ব-১৭
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="mG9cSAL-EMo" data-npdf="20240904-1725471995-we6v5DlQ.pdf" tabindex="0">
+          ভেক্টর Recap Class
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="zoKJyQWXp3o" data-npdf="20240907-1725729478-oVZ5StHK.pdf" tabindex="0">
+          নিউটনিয়ান বলবিদ্যা - পর্ব ০১
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="APPcCkykvNs" data-npdf="20240910-1725911627-3IB7EpLg.pdf" tabindex="0">
+          নিউটনিয়ান বলবিদ্যা - পর্ব ০২
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="PWLWR6lWAm8" data-npdf="20240912-1726085895-wF5wptTe.pdf" tabindex="0">
+          নিউটনিয়ান বলবিদ্যা - পর্ব ০৩
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="BS6rq0bOL6k" data-npdf="20240917-1726519586-8s1EWFoL.pdf" tabindex="0">
+          নিউটনিয়ান বলবিদ্যা - পর্ব ০৪
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="xkVeeJMHYP8" data-npdf="20240919-1726739785-H55orBak.pdf" tabindex="0">
+          নিউটনিয়ান বলবিদ্যা - পর্ব ০৫
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="cPpuexc8q2o" data-npdf="20240921-1726897769-r9RJuNkV.pdf" tabindex="0">
+          নিউটনিয়ান বলবিদ্যা - পর্ব ০৬
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="AJ0Bj5ZbaKM" data-npdf="20240921-1726897769-r9RJuNkV.pdf" tabindex="0">
+          নিউটনিয়ান বলবিদ্যা - পর্ব ৬.১
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="ZIChNNixXnU" data-npdf="20240922-1726945890-Z16b5DNP.pdf" tabindex="0">
+          নিউটনিয়ান বলবিদ্যা - পর্ব ০৭
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="PocGaxDjRv8" data-npdf="20240924-1727173846-VG0aZdjq.pdf" tabindex="0">
+          নিউটনিয়ান বলবিদ্যা - পর্ব ০৮
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="GglMV8lHwPs" data-npdf="20240929-1727547483-L5kB5ZCE.pdf" tabindex="0">
+          নিউটনিয়ান বলবিদ্যা - পর্ব ০৯
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="8xve_XeXGFo" data-npdf="20241001-1727731776-wte1hX69.pdf" tabindex="0">
+          নিউটনিয়ান বলবিদ্যা - পর্ব ১০
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="Jwl-ohnmx_A" data-npdf="20241003-1727892401-1f0saRNR.pdf" tabindex="0">
+          নিউটনিয়ান বলবিদ্যা - পর্ব ১১
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="sgEg0LgyWJo" data-npdf="20241005-1728140095-81jXgJba.pdf" tabindex="0">
+          নিউটনিয়ান বলবিদ্যা - পর্ব ১২
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="dBDJ9pyOUkk" data-npdf="20241008-1728326654-v8utxNvX.pdf" tabindex="0">
+          নিউটনিয়ান বলবিদ্যা - পর্ব ১৩
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="eS4vni3W4Ig" data-npdf="20241010-1728559567-JFT41oJp.pdf" tabindex="0">
+          নিউটনিয়ান বলবিদ্যা - পর্ব ১৪
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="DkphSGzgSRk" data-npdf="20241015-1728992961-Xvd59Eft.pdf" tabindex="0">
+          নিউটনিয়ান বলবিদ্যা - পর্ব ১৫
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="sU43BSOW-dk" data-npdf="20241017-1729167957-41SSmave.pdf" tabindex="0">
+          নিউটনিয়ান বলবিদ্যা - পর্ব ১৬
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="ap9cbg5bDEU" data-npdf="20241021-1729532737-C2hcIq30.pdf" tabindex="0">
+          নিউটনিয়ান বলবিদ্যা - পর্ব ১৭
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="iMmDXf5y0ME" data-npdf="20241027-1729967671-k7VuFpZy.pdf" tabindex="0">
+          কাজ, ক্ষমতা ও শক্তি - পর্ব ০১
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="DpC3HhfV2GI" data-npdf="20241028-1730137166-AHPrq6pw.pdf" tabindex="0">
+          কাজ, ক্ষমতা ও শক্তি - পর্ব ০২
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="3AGynUwep90" data-npdf="20241030-1730308515-tBK9Vqh4.pdf" tabindex="0">
+          কাজ, ক্ষমতা ও শক্তি - পর্ব ০৩
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="q_8wcyAfbLg" data-npdf="20241102-1730567282-LpEKOnjo.pdf" tabindex="0">
+          কাজ , শক্তি ও ক্ষমতা - পর্ব ০৪
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="pA-np42UI_o" data-npdf="20241105-1730748099-VvX8d6yc.pdf" tabindex="0">
+          কাজ , শক্তি ও ক্ষমতা - পর্ব ০৫
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="j090azZkbzw" data-npdf="20241110-1731196014-PuGxurGJ.pdf" tabindex="0">
+          কাজ, শক্তি ও ক্ষমতা - পর্ব ০৬
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="W3oO4ZegXoE" data-npdf="20241112-1731353138-QjPdN6yU.pdf" tabindex="0">
+          কাজ, শক্তি ও ক্ষমতা - পর্ব ৭.১
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="IFhwrXcAfgM" data-npdf="20241112-1731353138-QjPdN6yU.pdf" tabindex="0">
+          কাজ, শক্তি ও ক্ষমতা - পর্ব ৭.২
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="oJA9X4B69dY" data-npdf="20241116-1731771933-gmF08jrw.pdf" tabindex="0">
+          কাজ , শক্তি ও ক্ষমতা - পর্ব ০৮
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="uwiJjR_t-oA" data-npdf="20241116-1731774778-DQ3alOvI.pdf" tabindex="0">
+          কাজ , শক্তি ও ক্ষমতা - পর্ব ০৯
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="DvozjI579_c" data-npdf="20241118-1731947334-tltmjKkp.pdf" tabindex="0">
+          কাজ , শক্তি ও ক্ষমতা - পর্ব ১০
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="VDMxRBDnu38" data-npdf="20241123-1732384193-f3O2cUN1.pdf" tabindex="0">
+          মহাকর্ষ ও অভিকর্ষ - পর্ব ০১
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="zHvzIfXzQXE" data-npdf="20241126-1732568984-H2HlJC10.pdf" tabindex="0">
+          মহাকর্ষ ও অভিকর্ষ - পর্ব ০২
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="rczIRfN0c4s" data-npdf="20241127-1732721500-a4QvP7Xu.pdf" tabindex="0">
+          মহাকর্ষ ও অভিকর্ষ - পর্ব ০৩
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="mRFmORo1wKo" data-npdf="20241203-1733179611-vOBfdcok.pdf" tabindex="0">
+          মহাকর্ষ ও অভিকর্ষ - পর্ব ০৪
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="HkCPVf4hKu4" data-npdf="20241205-1733350027-3zyLvEKu.pdf" tabindex="0">
+          মহাকর্ষ ও অভিকর্ষ - পর্ব ০৫
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="kchLWczaM84" data-npdf="20241208-1733661793-j87uTK6U.pdf" tabindex="0">
+          মহাকর্ষ ও অভিকর্ষ - পর্ব ০৬
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="7rCa6Z9AM_0" data-npdf="20241213-1734033589-znKXzo9q.pdf" tabindex="0">
+          মহাকর্ষ ও অভিকর্ষ - পর্ব ০৭
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="hGuJiUtrtPY" data-npdf="20241215-1734208925-7jlSlQup.pdf" tabindex="0">
+          মহাকর্ষ ও অভিকর্ষ - পর্ব ০৮
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="bhIErsodIiI" data-npdf="20241216-1734295046-BIPsWq32.pdf" tabindex="0">
+          মহাকর্ষ ও অভিকর্ষ  - পর্ব ০৯
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="mgWkKivM7TI" data-npdf="20241219-1734549182-nb4N9cDS.pdf" tabindex="0">
+          মহাকর্ষ ও অভিকর্ষ - পর্ব ১০
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="bgs3omO-8Aw" data-npdf="20241222-1734808935-0Pl4D4wD.pdf" tabindex="0">
+          আদর্শ গ্যাস ও গ্যাসের গতিতত্ত্ব  -  পর্ব ০১
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="II5ceF38e8I" data-npdf="20241224-1734986517-14xcUizr.pdf" tabindex="0">
+          আদর্শ গ্যাস ও গ্যাসের গতিতত্ত্ব  -  পর্ব ০২
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="rXYdp1MKXEg" data-npdf="20241226-1735157159-03LaqyWX.pdf" tabindex="0">
+          আদর্শ গ্যাস ও গ্যাসের গতিতত্ত্ব  - পর্ব ০৩
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="a2KYM6I-xcY" data-npdf="20241229-1735417458-jHysnV4C.pdf" tabindex="0">
+          আদর্শ গ্যাস ও গ্যাসের গতিতত্ত্ব - পর্ব ০৪
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="R_R900QI3IA" data-npdf="20241231-1735586687-KcbuBT3Q.pdf" tabindex="0">
+          আদর্শ গ্যাস ও গ্যাসের গতিতত্ত্ব - পর্ব ০৫
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="1KbaMU0gUIQ" data-npdf="20250101-1735750599-96lbdL6n.pdf" tabindex="0">
+          আদর্শ গ্যাস ও গ্যাসের গতিতত্ত্ব - পর্ব ০৬
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="_2p37pNIFZI" data-npdf="20250105-1736019429-rEPSmMcX.pdf" tabindex="0">
+          পর্যায়বৃত্ত গতি - পর্ব ০১
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="qmDbwZp0epc" data-npdf="20250105-1736019678-vSSuBxaX.pdf" tabindex="0">
+          সৃজনশীল + প্র‍্যাক্টিস ক্লাস
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="B1kAtnRPz90" data-npdf="20250107-1736189272-WuBF5kkK.pdf" tabindex="0">
+          পর্যায়বৃত্ত গতি - পর্ব ০২
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="etzFqBrRnvY" data-npdf="20250109-1736362739-DarIWH7T.pdf" tabindex="0">
+          পর্যায়বৃত্ত গতি  - পর্ব ০৩
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="2rKrpiK7DZM" data-npdf="20250112-1736619592-irUHpR6t.pdf" tabindex="0">
+          পর্যায়বৃত্ত গতি - পর্ব ০৪
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="Adq1JNMdHxY" data-npdf="20250114-1736801247-LnFUSIOl.pdf" tabindex="0">
+          পর্যায়বৃত্ত গতি - পর্ব ০৫
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="J9GhQhkhOg8" data-npdf="20250116-1736967194-JSAZITsf.pdf" tabindex="0">
+          পর্যায়বৃত্ত গতি - পর্ব ০৬
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="LKvlWuKXK5s" data-npdf="20250119-1737228577-Y4UwCcbM.pdf" tabindex="0">
+          পর্যায়বৃত্ত গতি - পর্ব ০৭
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="RqgPG5pcwME" data-npdf="20250122-1737563666-j4m6lxOH.pdf" tabindex="0">
+          পদার্থের গাঠনিক ধর্ম - পর্ব ০১
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="R5WAE6_cB4g" data-npdf="20250126-1737830206-l1mpe7UI.pdf" tabindex="0">
+          পদার্থের গাঠনিক ধর্ম - পর্ব ০২
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="l2m2SfHqyBc" data-npdf="20250129-1738170474-o37Yd7jw.pdf" tabindex="0">
+          পদার্থের গাঠনিক ধর্ম - পর্ব ০৩
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="w0POBwb4g-8" data-npdf="20250202-1738434877-zNt87O4Y.pdf" tabindex="0">
+          পদার্থের গাঠনিক ধর্ম - পর্ব ৪.১
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="SUbSQEmYHFA" data-npdf="20250204-1738667232-HmGrmVnT.pdf" tabindex="0">
+          পদার্থের গাঠনিক ধর্ম - পর্ব ৪.২
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="2F75bQi54Ck" data-npdf="20250206-1738779597-oOviO2Ez.pdf" tabindex="0">
+          পদার্থের গাঠনিক ধর্ম - পর্ব ০৫
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="L4ZEQb71zVk" data-npdf="20250209-1739045893-A0YCP3RK.pdf" tabindex="0">
+          পদার্থের গাঠনিক ধর্ম - পর্ব ০৬
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="NlxDQ4p1J0c" data-npdf="20250218-1739823027-uMardrUs.pdf" tabindex="0">
+          তরঙ্গ - পর্ব ০১
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="Z5krAU-dSrM" data-npdf="20250220-1739995663-1aQ8s6Vy.pdf" tabindex="0">
+          তরঙ্গ - পর্ব ০২
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="lR9Y_2YsIAU" data-npdf="20250226-1740514038-hZ7CdkqB.pdf" tabindex="0">
+          তরঙ্গ - পর্ব ০৩
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="ls23DN-zOIA" data-npdf="20250304-1741030037-nPOcL9kd.pdf" tabindex="0">
+          তরঙ্গ - পর্ব ০৪
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="3V84wMOJbCw" data-npdf="20250311-1741683251-Kd3bWpSV.pdf" tabindex="0">
+          তরঙ্গ - পর্ব ০৫
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="IdYI7rSqzKc" data-npdf="20250307-1741285862-AbJZKWRI.pdf" tabindex="0">
+          তরঙ্গ - পর্ব ০৬
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="es-zRlN86-A" tabindex="0">
+          ভৌত জগৎ ও পরিমাপ - পর্ব ০১
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="dVVGWdW7hkY" data-npdf="20250312-1741716808-CvFMnwDc.pdf" tabindex="0">
+          ভৌত জগৎ - পর্ব ০২
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="jRhpgkIysQw" data-npdf="20250317-1742221505-PMPT3aGz.pdf" tabindex="0">
+          ভৌত জগৎ - পর্ব  ০৩
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="bnm-i9kPA-s" data-npdf="20250320-1742470128-uB0vPorJ.pdf" tabindex="0">
+          গতিবিদ্যা - পর্ব ০১
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="bCPvEITx19A" data-npdf="20250325-1742839906-jXd3APvc.pdf" tabindex="0">
+          গতিবিদ্যা - পর্ব ০২
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="ftKz3Fj4kSY" data-npdf="20250410-1744225519-Ue5zsfT3.pdf" tabindex="0">
+          গতিবিদ্যা - পর্ব ০৩
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="aaHJ_R2jsFU" data-npdf="20250413-1744489476-GItfEaXm.pdf" tabindex="0">
+          গতিবিদ্যা - পর্ব ০৪
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="TZcRgjoGcEI" data-npdf="20250415-1744663208-bdfZ6yzt.pdf" tabindex="0">
+          গতিবিদ্যা - পর্ব ০৫
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="nXnyYHPF-2Q" data-npdf="20250417-1744892394-3imGmgFC.pdf" tabindex="0">
+          গতিবিদ্যা - পর্ব  ০৬
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="zIAoadVATwU" data-npdf="20250420-1745093143-l9daYNMW.pdf" tabindex="0">
+          গতিবিদ্যা - পর্ব  ০৭
+        </li>
+        <li class="watchli cursor-pointer text-white px-3 py-2 rounded-md hover:bg-slate-700" data-vid="O3p6uxRIK24" data-npdf="20250422-1745272201-Vekf313F.pdf" tabindex="0">
+          গতিবিদ্যা - পর্ব ০৮
+        </li>
+    </ul>
+   </aside>
+  </main>
+  <!-- Footer -->
+  <footer class="bg-black text-white text-center py-2 text-sm">
+   Join our
+   <a class="text-red-600 hover:underline" href="#">
+    Facebook Group
+   </a>
+   for updates and discussions!
+  </footer>
+  <script>
+   const classList = document.getElementById('classList');
+   const videoPlayer = document.getElementById('videoPlayer');
+   const pdfDownload = document.getElementById('pdfDownload');
+
+   function clearSelected() {
+     document.querySelectorAll('.watchli.selected').forEach(el => {
+       el.classList.remove('selected');
+     });
+   }
+
+   classList.addEventListener('click', (e) => {
+     const li = e.target.closest('li.watchli');
+     if (!li) return;
+
+     clearSelected();
+     li.classList.add('selected');
+
+     const videoId = li.getAttribute('data-vid');
+     const pdfFile = li.getAttribute('data-npdf');
+
+     if(videoId) {
+       videoPlayer.src = `https://www.youtube.com/embed/${videoId}`;
+     }
+     if(pdfFile) {
+       pdfDownload.href = `https://www.bondipathshala.com.bd/pdf/${pdfFile}`;
+     }
+   });
+
+   // Also allow keyboard navigation (Enter key) for accessibility
+   classList.addEventListener('keydown', (e) => {
+     if(e.key === 'Enter' || e.key === ' ') {
+       e.preventDefault();
+       const li = e.target.closest('li.watchli');
+       if (!li) return;
+
+       clearSelected();
+       li.classList.add('selected');
+
+       const videoId = li.getAttribute('data-vid');
+       const pdfFile = li.getAttribute('data-npdf');
+
+       if(videoId) {
+         videoPlayer.src = `https://www.youtube.com/embed/${videoId}`;
+       }
+       if(pdfFile) {
+         pdfDownload.href = `https://www.bondipathshala.com.bd/pdf/${pdfFile}`;
+       }
+     }
+   });
+  </script>
+ </body>
+</html>
