@@ -1,21 +1,23 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Courses Index</title>
+    <title>Courses Index - Dark Theme</title>
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Caveat', cursive;
+            /* Changed font to sans-serif */
+            font-family: sans-serif;
         }
 
         body {
-            background-color: #f0f4f8;
-            color: #333;
+            /* Added background image and dark theme colors */
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.pexels.com/photos/731649/pexels-photo-731649.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1') no-repeat center center fixed;
+            background-size: cover;
+            color: #e0e0e0; /* Light gray text */
             line-height: 1.6;
         }
 
@@ -32,7 +34,7 @@
 
         header h1 {
             font-size: 3rem;
-            color: #2c3e50;
+            color: #e0e0e0; /* Light gray color for heading */
             margin-bottom: 10px;
         }
 
@@ -44,9 +46,10 @@
         }
 
         .course-card {
-            background: #fff;
+            /* Darker background for cards in dark theme */
+            background: #333;
             border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* Adjusted shadow for dark theme */
             overflow: hidden;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             cursor: pointer;
@@ -54,14 +57,15 @@
 
         .course-card:hover {
             transform: translateY(-10px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4); /* Adjusted shadow for dark theme */
         }
 
         .course-card h2 {
             font-size: 1.8rem;
-            color: #2c3e50;
+            color: #fff; /* White color for card titles */
             padding: 20px;
-            background: linear-gradient(to right, #74ebd5, #acb6e5);
+            /* Adjusted gradient for dark theme or kept original */
+            background: linear-gradient(to right, #4b6cb7, #182848);
             text-align: center;
         }
 
@@ -75,12 +79,13 @@
             padding: 15px;
             text-align: center;
             font-size: 1.2rem;
-            border-top: 1px solid #ecf0f1;
+            /* Darker border color */
+            border-top: 1px solid #555;
         }
 
         .course-table a {
             text-decoration: none;
-            color: #2980b9;
+            color: #74ebd5; /* Lighter color for links */
             display: block;
             padding: 10px;
             transition: color 0.3s ease;
@@ -126,46 +131,46 @@
             <div class="course-card" data-subject="Physics">
                 <h2>Physics</h2>
                 <table class="course-table">
-                    <tr>
-                        <td><a href="https://arnoy-joking.github.io/physics-1st-paper/" >1st Paper</a></td>
+                    <tbody><tr>
+                        <td><a href="https://arnoy-joking.github.io/physics-1st-paper/">1st Paper</a></td>
                     </tr>
                     <tr>
-                        <td><a href="https://arnoy-joking.github.io/physics2ndpaper/" >2nd Paper</a></td>
+                        <td><a href="https://arnoy-joking.github.io/physics2ndpaper/">2nd Paper</a></td>
                     </tr>
-                </table>
+                </tbody></table>
             </div>
             <div class="course-card" data-subject="Chemistry">
                 <h2>Chemistry</h2>
                 <table class="course-table">
-                    <tr>
-                        <td><a href="https://arnoy-joking.github.io/chemistry1stpaper/" >1st Paper</a></td>
+                    <tbody><tr>
+                        <td><a href="https://arnoy-joking.github.io/chemistry1stpaper/">1st Paper</a></td>
                     </tr>
                     <tr>
-                        <td><a href="https://arnoy-joking.github.io/chemistry2ndpaper/" >2nd Paper</a></td>
+                        <td><a href="https://arnoy-joking.github.io/chemistry2ndpaper/">2nd Paper</a></td>
                     </tr>
-                </table>
+                </tbody></table>
             </div>
             <div class="course-card" data-subject="Biology">
                 <h2>Biology</h2>
                 <table class="course-table">
-                    <tr>
-                        <td><a href="https://arnoy-joking.github.io/biology1st/" >1st Paper</a></td>
+                    <tbody><tr>
+                        <td><a href="https://arnoy-joking.github.io/biology1st/">1st Paper</a></td>
                     </tr>
                     <tr>
-                        <td><a href="https://arnoy-joking.github.io/biology-2nd-paper/" >2nd Paper</a></td>
+                        <td><a href="https://arnoy-joking.github.io/biology-2nd-paper/">2nd Paper</a></td>
                     </tr>
-                </table>
+                </tbody></table>
             </div>
             <div class="course-card" data-subject="Higher Math">
                 <h2>Higher Math</h2>
                 <table class="course-table">
-                    <tr>
-                        <td><a href="https://arnoy-joking.github.io/hmath1stpaper/" >1st Paper</a></td>
+                    <tbody><tr>
+                        <td><a href="https://arnoy-joking.github.io/hmath1stpaper/">1st Paper</a></td>
                     </tr>
                     <tr>
-                        <td><a href="https://arnoy-joking.github.io/hmath2ndpaper/" >2nd Paper</a></td>
+                        <td><a href="https://arnoy-joking.github.io/hmath2ndpaper/">2nd Paper</a></td>
                     </tr>
-                </table>
+                </tbody></table>
             </div>
         </div>
         <footer>
