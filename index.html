@@ -1,192 +1,161 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Courses Index - Dark Theme</title>
-    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&display=swap" rel="stylesheet">
+    <title>Course Index - Refined Design</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        * {
+        body {
+            font-family: 'Inter', sans-serif; /* Apply Inter font */
+            background-color: #1a202c; /* Deep dark background */
+            color: #e2e8f0; /* Light text color */
+            line-height: 1.6;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-            /* Changed font to sans-serif */
-            font-family: sans-serif;
-        }
-
-        body {
-            /* Added background image and dark theme colors */
-            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.pexels.com/photos/731649/pexels-photo-731649.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1') no-repeat center center fixed;
-            background-size: cover;
-            color: #e0e0e0; /* Light gray text */
-            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh; /* Ensure body takes at least full viewport height */
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 2rem;
+            flex-grow: 1; /* Allow container to grow and push footer down */
         }
 
-        header {
-            text-align: center;
-            padding: 40px 0;
-        }
-
-        header h1 {
-            font-size: 3rem;
-            color: #e0e0e0; /* Light gray color for heading */
-            margin-bottom: 10px;
-        }
-
-        .course-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-            padding: 20px 0;
-        }
-
-        .course-card {
-            /* Darker background for cards in dark theme */
-            background: #333;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* Adjusted shadow for dark theme */
-            overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        .course-block {
+            background-color: #2d3748; /* Slightly lighter dark for blocks */
+            border-radius: 0.75rem; /* Rounded corners */
+            padding: 1.5rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for hover */
             cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* Space out content */
         }
 
-        .course-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4); /* Adjusted shadow for dark theme */
+        .course-block:hover {
+            transform: translateY(-5px); /* Lift effect on hover */
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.3); /* Shadow on hover */
         }
 
-        .course-card h2 {
-            font-size: 1.8rem;
-            color: #fff; /* White color for card titles */
-            padding: 20px;
-            /* Adjusted gradient for dark theme or kept original */
-            background: linear-gradient(to right, #4b6cb7, #182848);
-            text-align: center;
+        .course-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #90cdf4; /* Lighter blue for titles */
         }
 
-        .course-table {
-            width: 100%;
-            border-collapse: collapse;
-            padding: 20px;
+        /* Container for the paper links - keeping vertical layout */
+        .paper-links-container {
+            display: flex;
+            flex-direction: column; /* Stack links vertically */
+            gap: 0.5rem; /* Add space between the links */
         }
 
-        .course-table td {
-            padding: 15px;
-            text-align: center;
-            font-size: 1.2rem;
-            /* Darker border color */
-            border-top: 1px solid #555;
+        .paper-link {
+            display: block; /* Make the entire link area clickable */
+            color: #a0aec0; /* Grayish text for links */
+            transition: color 0.2s ease, background-color 0.2s ease; /* Smooth transition for color and background */
+            text-decoration: none; /* Remove default underline */
+            padding: 0.75rem 1rem; /* Increase padding for a larger clickable area */
+            border-radius: 0.375rem; /* Slightly rounded corners for the clickable area */
         }
 
-        .course-table a {
-            text-decoration: none;
-            color: #74ebd5; /* Lighter color for links */
-            display: block;
-            padding: 10px;
-            transition: color 0.3s ease;
-        }
-
-        .course-table a:hover {
-            color: #e74c3c;
+        .paper-link:hover {
+            color: #ffffff; /* White text on hover */
+            background-color: #4a5568; /* Subtle background change on hover */
+            text-decoration: none; /* Keep no underline on hover for this style */
         }
 
         footer {
+            background-color: #1a202c; /* Same as body background */
+            color: #a0aec0;
             text-align: center;
-            padding: 20px 0;
-            font-size: 1rem;
-            color: #7f8c8d;
+            padding: 1.5rem;
+            margin-top: 2rem; /* Space above footer */
+            border-top: 1px solid #2d3748; /* Subtle separator line */
         }
 
-        @media (max-width: 768px) {
-            header h1 {
-                font-size: 2rem;
-            }
-
-            .course-card h2 {
-                font-size: 1.5rem;
-            }
-
-            .course-table td {
-                font-size: 1rem;
-                padding: 10px;
-            }
-
-            .container {
-                padding: 15px;
+        /* Responsive grid adjustments */
+        @media (min-width: 640px) {
+            .grid-cols-1 {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Responsive grid */
             }
         }
     </style>
 </head>
-<body>
-    <div class="container">
-        <header>
-            <h1>Course Index</h1>
-        </header>
-        <div class="course-grid">
-            <div class="course-card" data-subject="Physics">
-                <h2>Physics</h2>
-                <table class="course-table">
-                    <tbody><tr>
-                        <td><a href="https://arnoy-joking.github.io/physics-1st-paper/">1st Paper</a></td>
-                    </tr>
-                    <tr>
-                        <td><a href="https://arnoy-joking.github.io/physics2ndpaper/">2nd Paper</a></td>
-                    </tr>
-                </tbody></table>
+<body class="antialiased">
+    <header class="text-center py-8">
+        <h1 class="text-4xl font-bold text-white">Course Index</h1>
+    </header>
+
+    <main class="container">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="course-block">
+                <h2 class="course-title">Physics</h2>
+                <div class="paper-links-container">
+                    <a href="https://arnoy-joking.github.io/physics-1st-paper/" class="paper-link">1st Paper</a>
+                    <a href="https://arnoy-joking.github.io/physics2ndpaper/" class="paper-link">2nd Paper</a>
+                </div>
             </div>
-            <div class="course-card" data-subject="Chemistry">
-                <h2>Chemistry</h2>
-                <table class="course-table">
-                    <tbody><tr>
-                        <td><a href="https://arnoy-joking.github.io/chemistry1stpaper/">1st Paper</a></td>
-                    </tr>
-                    <tr>
-                        <td><a href="https://arnoy-joking.github.io/chemistry2ndpaper/">2nd Paper</a></td>
-                    </tr>
-                </tbody></table>
+
+            <div class="course-block">
+                <h2 class="course-title">Chemistry</h2>
+                <div class="paper-links-container">
+                    <a href="https://arnoy-joking.github.io/chemistry1stpaper/" class="paper-link">1st Paper</a>
+                    <a href="https://arnoy-joking.github.io/chemistry2ndpaper/" class="paper-link">2nd Paper</a>
+                </div>
             </div>
-            <div class="course-card" data-subject="Biology">
-                <h2>Biology</h2>
-                <table class="course-table">
-                    <tbody><tr>
-                        <td><a href="https://arnoy-joking.github.io/biology1st/">1st Paper</a></td>
-                    </tr>
-                    <tr>
-                        <td><a href="https://arnoy-joking.github.io/biology-2nd-paper/">2nd Paper</a></td>
-                    </tr>
-                </tbody></table>
+
+            <div class="course-block">
+                <h2 class="course-title">Biology</h2>
+                <div class="paper-links-container">
+                    <a href="https://arnoy-joking.github.io/biology1st/" class="paper-link">1st Paper</a>
+                    <a href="https://arnoy-joking.github.io/biology-2nd-paper/" class="paper-link">2nd Paper</a>
+                </div>
             </div>
-            <div class="course-card" data-subject="Higher Math">
-                <h2>Higher Math</h2>
-                <table class="course-table">
-                    <tbody><tr>
-                        <td><a href="https://arnoy-joking.github.io/hmath1stpaper/">1st Paper</a></td>
-                    </tr>
-                    <tr>
-                        <td><a href="https://arnoy-joking.github.io/hmath2ndpaper/">2nd Paper</a></td>
-                    </tr>
-                </tbody></table>
+
+            <div class="course-block sm:col-span-2 lg:col-span-1">
+                 <h2 class="course-title">Higher Math</h2>
+                 <div class="paper-links-container">
+                     <a href="https://arnoy-joking.github.io/hmath1stpaper/" class="paper-link">1st Paper</a>
+                     <a href="https://arnoy-joking.github.io/hmath2ndpaper/" class="paper-link">2nd Paper</a>
+                 </div>
+             </div>
+
             </div>
-        </div>
-        <footer>
-            <p>© 2025 Course Index. All rights reserved.</p>
-        </footer>
-    </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Course Index. All rights reserved.</p>
+    </footer>
 
     <script>
-        document.querySelectorAll('.course-card').forEach(card => {
-            card.addEventListener('click', function(e) {
-                if (e.target.tagName !== 'A') {
-                    const subject = this.dataset.subject;
-                    alert(`Explore ${subject} courses!`);
-                }
+        // Basic JavaScript can be added here for interactivity if needed.
+        // For example, you could add event listeners to the paper links
+        // to perform actions like loading content dynamically.
+
+        // Example (placeholder - updated to reflect actual links):
+        document.querySelectorAll('.paper-link').forEach(link => {
+            link.addEventListener('click', function(event) {
+                // Allow default link behavior (navigating to the URL)
+                // event.preventDefault(); // Commented out to allow navigation
+
+                const paper = this.textContent;
+                const courseBlock = this.closest('.course-block');
+                const courseTitle = courseBlock.querySelector('.course-title').textContent;
+                const url = this.href;
+                console.log(`Clicked on ${courseTitle} - ${paper}. Navigating to: ${url}`);
+
+                // If you wanted to do something else instead of navigating,
+                // you would uncomment event.preventDefault() and add your logic here.
             });
         });
+
     </script>
 </body>
 </html>
