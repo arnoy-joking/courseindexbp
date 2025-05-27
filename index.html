@@ -1,162 +1,164 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Course Index - Refined Design</title>
-    <link rel="icon" type="image/png" sizes="32x32" href="https://cdn-icons-png.freepik.com/512/7856/7856382.png">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif; /* Apply Inter font */
-            background-color: #1a202c; /* Deep dark background */
-            color: #e2e8f0; /* Light text color */
-            line-height: 1.6;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh; /* Ensure body takes at least full viewport height */
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ScienceVerse Index</title>
+  <!-- Favicon -->
+  <link rel="icon" href="https://cdn-icons-png.freepik.com/512/7856/7856382.png" type="image/png">
+  <style>
+    /* Reset and base styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
-            flex-grow: 1; /* Allow container to grow and push footer down */
-        }
+    body {
+      background: radial-gradient(circle at top, #0f0f3d, #000); /* Sci-fi background */
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+    }
 
-        .course-block {
-            background-color: #2d3748; /* Slightly lighter dark for blocks */
-            border-radius: 0.75rem; /* Rounded corners */
-            padding: 1.5rem;
-            transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for hover */
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between; /* Space out content */
-        }
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 0.5rem;
+      color: #9cf;
+      text-shadow: 0 0 10px #0ff; /* Glowing effect */
+      text-align: center;
+      white-space: pre-line; /* Enables line breaks in text */
+    }
 
-        .course-block:hover {
-            transform: translateY(-5px); /* Lift effect on hover */
-            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.3); /* Shadow on hover */
-        }
+    p {
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+      color: #ccc;
+      text-align: center;
+      white-space: pre-line; /* Enables line breaks in text */
+    }
 
-        .course-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            color: #90cdf4; /* Lighter blue for titles */
-        }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Responsive layout */
+      gap: 2rem;
+      width: 100%;
+      max-width: 1200px;
+    }
 
-        /* Container for the paper links - keeping vertical layout */
-        .paper-links-container {
-            display: flex;
-            flex-direction: column; /* Stack links vertically */
-            gap: 0.5rem; /* Add space between the links */
-        }
+    .card {
+      display: block;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 1.5rem;
+      border-radius: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: transform 0.3s, box-shadow 0.3s;
+      cursor: pointer;
+      text-decoration: none; /* Removes underline */
+      color: inherit; /* Inherits text color from parent */
+    }
 
-        .paper-link {
-            display: block; /* Make the entire link area clickable */
-            color: #a0aec0; /* Grayish text for links */
-            transition: color 0.2s ease, background-color 0.2s ease; /* Smooth transition for color and background */
-            text-decoration: none; /* Remove default underline */
-            padding: 0.75rem 1rem; /* Increase padding for a larger clickable area */
-            border-radius: 0.375rem; /* Slightly rounded corners for the clickable area */
-        }
+    .card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px #0ff; /* Hover effect */
+    }
 
-        .paper-link:hover {
-            color: #ffffff; /* White text on hover */
-            background-color: #4a5568; /* Subtle background change on hover */
-            text-decoration: none; /* Keep no underline on hover for this style */
-        }
+    .card h2 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+      color: #6cf;
+      white-space: pre-line; /* Allows linebreaks */
+    }
 
-        footer {
-            background-color: #1a202c; /* Same as body background */
-            color: #a0aec0;
-            text-align: center;
-            padding: 1.5rem;
-            margin-top: 2rem; /* Space above footer */
-            border-top: 1px solid #2d3748; /* Subtle separator line */
-        }
+    .card p {
+      font-size: 1rem;
+      color: #bbb;
+      margin-bottom: 0.5rem;
+    }
 
-        /* Responsive grid adjustments */
-        @media (min-width: 640px) {
-            .grid-cols-1 {
-                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Responsive grid */
-            }
-        }
-    </style>
+    footer {
+      margin-top: 3rem;
+      font-size: 1rem;
+      color: #666;
+      text-align: center;
+    }
+
+    @media (min-width: 768px) {
+      h1::after {
+        content: "\A";
+        white-space: pre;
+      }
+
+      p::after {
+        content: "\A";
+        white-space: pre;
+      }
+
+      .card h2::after {
+        content: "\A";
+        white-space: pre;
+      }
+    }
+  </style>
 </head>
-<body class="antialiased">
-    <header class="text-center py-8">
-        <h1 class="text-4xl font-bold text-white">Course Index</h1>
-    </header>
+<body>
+  <!-- Page Title -->
+  <h1>Welcome to the ScienceVerse! 🔭</h1>
+  <p>Dive into the realms
+of reason, reaction, and revolution.</p>
 
-    <main class="container">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div class="course-block">
-                <h2 class="course-title">Physics</h2>
-                <div class="paper-links-container">
-                    <a href="https://arnoy-joking.github.io/physics-1st-paper/" class="paper-link">1st Paper</a>
-                    <a href="https://arnoy-joking.github.io/physics2ndpaper/" class="paper-link">2nd Paper</a>
-                </div>
-            </div>
+  <!-- Grid of Subject Cards -->
+  <div class="grid">
+    <!-- Physics Realm -->
+    <a class="card" href="https://arnoy-joking.github.io/physics-1st-paper/">
+      <h2>🌌 Physics Realm 1</h2>
+      <p>Mechanics, motion and forces – let's shake up Newton's laws!</p>
+    </a>
+    <a class="card" href="https://arnoy-joking.github.io/physics2ndpaper/">
+      <h2>🌌 Physics Realm 2</h2>
+      <p>Electricity, waves, and modern physics – lightspeed learning!</p>
+    </a>
 
-            <div class="course-block">
-                <h2 class="course-title">Chemistry</h2>
-                <div class="paper-links-container">
-                    <a href="https://arnoy-joking.github.io/chemistry1stpaper/" class="paper-link">1st Paper</a>
-                    <a href="https://arnoy-joking.github.io/chemistry2ndpaper/" class="paper-link">2nd Paper</a>
-                </div>
-            </div>
+    <!-- Chemistry Chamber -->
+    <a class="card" href="https://arnoy-joking.github.io/chemistry1stpaper/">
+      <h2>🧪 Chemistry Chamber 1</h2>
+      <p>Atoms, bonding, and periodic trends – get molecular, bro 💥</p>
+    </a>
+    <a class="card" href="https://arnoy-joking.github.io/chemistry2ndpaper/">
+      <h2>🧪 Chemistry Chamber 2</h2>
+      <p>Equations, reactions, and practical magic in the lab 🔬</p>
+    </a>
 
-            <div class="course-block">
-                <h2 class="course-title">Biology</h2>
-                <div class="paper-links-container">
-                    <a href="https://arnoy-joking.github.io/biology1st/" class="paper-link">1st Paper</a>
-                    <a href="https://arnoy-joking.github.io/biology-2nd-paper/" class="paper-link">2nd Paper</a>
-                </div>
-            </div>
+    <!-- Biology Biosphere -->
+    <a class="card" href="https://arnoy-joking.github.io/biology1st/">
+      <h2>🌿 Biology Biosphere 1</h2>
+      <p>Cell biology, genetics, and life's inner code 🧬</p>
+    </a>
+    <a class="card" href="https://arnoy-joking.github.io/biology-2nd-paper/">
+      <h2>🌿 Biology Biosphere 2</h2>
+      <p>Ecology, evolution, and human physiology – life explored!</p>
+    </a>
 
-            <div class="course-block sm:col-span-2 lg:col-span-1">
-                 <h2 class="course-title">H.Math</h2>
-                 <div class="paper-links-container">
-                     <a href="https://arnoy-joking.github.io/hmath1stpaper/" class="paper-link">1st Paper</a>
-                     <a href="https://arnoy-joking.github.io/hmath2ndpaper/" class="paper-link">2nd Paper</a>
-                 </div>
+    <!-- Higher Math -->
+    <a class="card" href="https://arnoy-joking.github.io/hmath1stpaper/">
+      <h2>📐 Higher Math:
+Paper 1</h2>
+      <p>Algebra, trigonometry, geometry – your mental gym is ready. Flex those neurons!</p>
+    </a>
+    <a class="card" href="https://arnoy-joking.github.io/hmath2ndpaper/">
+      <h2>📊 Higher Math:
+Paper 2</h2>
+      <p>Calculus, vectors, stats – where real-world problems meet real power.</p>
+    </a>
+  </div>
 
-            </div>
-    </main>
-
-    <footer>
-        <p>&copy; 2025 Course Index. All rights reserved.</p><br>
-        
-    </footer>
-
-    <script>
-        // Basic JavaScript can be added here for interactivity if needed.
-        // For example, you could add event listeners to the paper links
-        // to perform actions like loading content dynamically.
-
-        // Example (placeholder - updated to reflect actual links):
-        document.querySelectorAll('.paper-link').forEach(link => {
-            link.addEventListener('click', function(event) {
-                // Allow default link behavior (navigating to the URL)
-                // event.preventDefault(); // Commented out to allow navigation
-
-                const paper = this.textContent;
-                const courseBlock = this.closest('.course-block');
-                const courseTitle = courseBlock.querySelector('.course-title').textContent;
-                const url = this.href;
-                console.log(`Clicked on ${courseTitle} - ${paper}. Navigating to: ${url}`);
-
-                // If you wanted to do something else instead of navigating,
-                // you would uncomment event.preventDefault() and add your logic here.
-            });
-        });
-
-    </script>
+  <!-- Footer -->
+  <footer>
+    Made by Arnoy
+  </footer>
 </body>
 </html>
