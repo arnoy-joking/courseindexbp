@@ -3,166 +3,187 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ScienceVerse Index</title>
-  <!-- Favicon -->
-  <link rel="icon" href="https://cdn-icons-png.freepik.com/512/7856/7856382.png" type="image/png">
-  <style>
+  <title>The Grand Archive of Sciences</title>
+  <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2928/2928062.png" type="image/png"> <style>
     /* Reset and base styles */
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: 'Segoe UI', sans-serif;
+      font-family: 'Times New Roman', serif; /* Maintaining a classic feel */
     }
 
     body {
-      background: radial-gradient(circle at top, #0f0f3d, #000); /* Sci-fi background */
-      color: #fff;
+      background: linear-gradient(to bottom, #1a2a3a, #0a0a1a); /* Deeper, more formal gradient */
+      color: #e0e0e0;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 2rem;
+      padding: 3rem;
+      background-image: url('https://www.transparenttextures.com/patterns/lined-paper.png'); /* Subtle textured paper overlay */
     }
 
     h1 {
-      font-size: 3rem;
-      margin-bottom: 0.5rem;
-      color: #9cf;
-      text-shadow: 0 0 10px #0ff; /* Glowing effect */
+      font-size: 3.8rem;
+      margin-bottom: 0.8rem;
+      color: #6a86b7; /* Lavender light for a formal, distinguished look */
+      text-shadow: 0 0 10px rgba(230, 230, 250, 0.7), 0 0 20px rgba(230, 230, 250, 0.4); /* Softer, more elegant glow */
       text-align: center;
-      white-space: pre-line; /* Enables line breaks in text */
+      white-space: pre-line;
+      font-family: 'Georgia', serif;
+      letter-spacing: 0.05em; /* Slightly wider letter spacing for formality */
     }
 
     p {
-      font-size: 1.2rem;
-      margin-bottom: 2rem;
-      color: #ccc;
+      font-size: 1.3rem;
+      margin-bottom: 3rem;
+      color: #c0c0c0;
       text-align: center;
-      white-space: pre-line; /* Enables line breaks in text */
+      white-space: pre-line;
+      line-height: 1.6;
     }
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Responsive layout */
-      gap: 2rem;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2.5rem;
       width: 100%;
-      max-width: 1200px;
+      max-width: 1300px;
     }
 
     .card {
       display: block;
-      background: rgba(255, 255, 255, 0.05);
-      padding: 1.5rem;
-      border-radius: 15px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      transition: transform 0.3s, box-shadow 0.3s;
+      background: rgba(30, 45, 60, 0.7); /* Deeper, more subdued card background */
+      padding: 2rem;
+      border-radius: 15px; /* Slightly less rounded */
+      border: 1px solid rgba(173, 216, 230, 0.4); /* Light blue border for elegance */
+      transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
       cursor: pointer;
-      text-decoration: none; /* Removes underline */
-      color: inherit; /* Inherits text color from parent */
+      text-decoration: none;
+      color: inherit;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(45deg, rgba(173,216,230,0.05) 0%, transparent 50%, rgba(173,216,230,0.05) 100%);
+      opacity: 0;
+      transition: opacity 0.3s ease-in-out;
+    }
+
+    .card:hover::before {
+      opacity: 1;
     }
 
     .card:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 20px #0ff; /* Hover effect */
+      transform: translateY(-5px); /* Subtle lift */
+      box-shadow: 0 8px 30px rgba(173, 216, 230, 0.3), 0 0 20px rgba(173, 216, 230, 0.1); /* Elegant, subtle glow */
+      background: rgba(40, 55, 70, 0.8); /* Slightly lighter on hover */
     }
 
     .card h2 {
-      font-size: 1.5rem;
-      margin-bottom: 0.5rem;
-      color: #6cf;
-      white-space: pre-line; /* Allows linebreaks */
+      font-size: 1.7rem;
+      margin-bottom: 0.7rem;
+      color: #b0c4de; /* Steel blue for titles */
+      white-space: pre-line;
+      font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
+      letter-spacing: 0.03em;
     }
 
     .card p {
-      font-size: 1rem;
-      color: #bbb;
+      font-size: 1.05rem;
+      color: #d3d3d3;
       margin-bottom: 0.5rem;
+      line-height: 1.5;
     }
 
     footer {
-      margin-top: 3rem;
-      font-size: 1rem;
-      color: #666;
+      margin-top: 4rem;
+      font-size: 1.05rem;
+      color: #909090;
       text-align: center;
+      font-style: italic;
     }
 
-    @media (min-width: 768px) {
-      h1::after {
-        content: "\A";
-        white-space: pre;
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2.5rem;
       }
 
-      p::after {
-        content: "\A";
-        white-space: pre;
+      p {
+        font-size: 1rem;
       }
 
-      .card h2::after {
-        content: "\A";
-        white-space: pre;
+      .card {
+        padding: 1.5rem;
+      }
+
+      .card h2 {
+        font-size: 1.4rem;
+      }
+
+      .card p {
+        font-size: 0.95rem;
       }
     }
   </style>
 </head>
 <body>
-  <!-- Page Title -->
-  <h1>Welcome to the ScienceVerse! 🔭</h1>
-  <p>Dive into the realms
-of reason, reaction, and revolution.</p>
+  <h1>The Grand Archive of Scientific Disciplines 📚</h1>
+  <p>Peruse the meticulously cataloged collections<br>of knowledge that define our understanding of the universe.</p>
 
-  <!-- Grid of Subject Cards -->
   <div class="grid">
-    <!-- Physics Realm -->
     <a class="card" href="https://arnoy-joking.github.io/physics-1st-paper/">
-      <h2>🌌 Physics Realm 1</h2>
-      <p>Mechanics, motion and forces – let's shake up Newton's laws!</p>
+      <h2>🌌 Physical Sciences: 1</h2>
+      <p>Exploring the fundamental principles of motion, forces, and energy within physical systems.</p>
     </a>
     <a class="card" href="https://arnoy-joking.github.io/physics2ndpaper/">
-      <h2>🌌 Physics Realm 2</h2>
-      <p>Electricity, waves, and modern physics – lightspeed learning!</p>
+      <h2>🌌 Physical Sciences: 2</h2>
+      <p>Investigating the nature of electricity, magnetism, waves, and the tenets of quantum and relativistic physics.</p>
     </a>
 
-    <!-- Chemistry Chamber -->
     <a class="card" href="https://arnoy-joking.github.io/chemistry1stpaper/">
-      <h2>🧪 Chemistry Chamber 1</h2>
-      <p>Atoms, bonding, and periodic trends – get molecular, bro 💥</p>
+      <h2>🧪 Chemical Sciences: 1</h2>
+      <p>Analyzing atomic structure, chemical bonding, and the periodic properties of elements.</p>
     </a>
     <a class="card" href="https://arnoy-joking.github.io/chemistry2ndpaper/">
-      <h2>🧪 Chemistry Chamber 2</h2>
-      <p>Equations, reactions, and practical magic in the lab 🔬</p>
+      <h2>🧪 Chemical Sciences: Inorganic</h2>
+      <p>Delving into chemical reactions, stoichiometry, and practical laboratory methodologies.</p>
     </a>
      <a class="card" href="https://arnoy-joking.github.io/organicochemistrico/">
-      <h2>🧪 Organico Chemistrico</h2>
-      <p>Discovering your urine at the lab</p>
+      <h2>🧪 Organic Chemistry: Carbon Compounds & Analysis</h2>
+      <p>A comprehensive study of carbon-based compounds and their analytical techniques.</p>
     </a>
 
-    <!-- Biology Biosphere -->
     <a class="card" href="https://arnoy-joking.github.io/biology1st/">
-      <h2>🌿 Biology Biosphere 1</h2>
-      <p>Cell biology, genetics, and life's inner code 🧬</p>
+      <h2>🌿 Biological Sciences: 1</h2>
+      <p>Examining the intricacies of cell biology, genetics, and the molecular foundations of life.</p>
     </a>
     <a class="card" href="https://arnoy-joking.github.io/biology-2nd-paper/">
-      <h2>🌿 Biology Biosphere 2</h2>
-      <p>Ecology, evolution, and human physiology – life explored!</p>
+      <h2>🌿 Biological Sciences: 2</h2>
+      <p>Investigating ecosystems, evolutionary processes, and the functions of living organisms.</p>
     </a>
 
-    <!-- Higher Math -->
     <a class="card" href="https://arnoy-joking.github.io/hmath1stpaper/">
-      <h2>📐 Higher Math:
-Paper 1</h2>
-      <p>Algebra, trigonometry, geometry – your mental gym is ready. Flex those neurons!</p>
+      <h2>📐 Advanced Mathematics: 1</h2>
+      <p>Developing robust analytical skills through algebraic reasoning, trigonometric functions, and geometric principles.</p>
     </a>
     <a class="card" href="https://arnoy-joking.github.io/hmath2ndpaper/">
-      <h2>📊 Higher Math:
-Paper 2</h2>
-      <p>Calculus, vectors, stats – where real-world problems meet real power.</p>
+      <h2>📊 Advanced Mathematics: 2</h2>
+      <p>Mastering differential and integral calculus, vector analysis, and statistical methods for complex problem-solving.</p>
     </a>
   </div>
 
-  <!-- Footer -->
   <footer>
-    Made by Arnoy
+    Curated by Arnoy in the pursuit of knowledge.
   </footer>
 </body>
 </html>
