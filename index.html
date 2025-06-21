@@ -14,15 +14,18 @@
     }
 
     body {
-      background: radial-gradient(circle, #1e1e1e, #111);
-      color: #e0e0e0;
-      padding: 2rem;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      backdrop-filter: blur(8px);
-    }
+  background: radial-gradient(circle, #1e1e1e, #111);
+  color: #e0e0e0;
+  padding: 1rem;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}
 
     h1 {
       font-size: 2.5rem;
@@ -45,17 +48,19 @@
     }
 
     .card {
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 20px;
-      padding: 1.5rem;
-      transition: 0.3s ease-in-out;
-      backdrop-filter: blur(8px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      position: relative;
-      overflow: hidden;
-      color: #f1f1f1;
-      text-decoration: none;
-    }
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 16px;
+  padding: 1rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  position: relative;
+  overflow: hidden;
+  color: #f1f1f1;
+  text-decoration: none;
+  will-change: transform;
+}
 
     .card:hover {
       transform: translateY(-5px);
@@ -77,15 +82,16 @@
   margin-top: 1rem;
   font-size: 0.85rem;
   opacity: 0;
-  transition: all 0.4s ease;
+  transition: opacity 0.3s ease;
   color: #cde0f3;
   font-style: italic;
-  background: rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.05);
   padding: 6px 10px;
   border-radius: 12px;
-  backdrop-filter: blur(4px);
-  max-width: 100%;
+  backdrop-filter: blur(3px);
   display: inline-block;
+  max-width: 100%;
+  pointer-events: none;
 }
 
     .card:hover .quote {
@@ -101,9 +107,27 @@
 
     @media (max-width: 768px) {
   h1 {
-    font-size: 1.8rem;
+    font-size: 1.5rem;
+    padding: 0.8rem;
+  }
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  .card {
     padding: 1rem;
   }
+  .card h2 {
+    font-size: 1.1rem;
+  }
+  .card p {
+    font-size: 0.95rem;
+  }
+  .quote {
+    font-size: 0.75rem;
+    margin-top: 0.5rem;
+  }
+}
   .grid {
     grid-template-columns: 1fr;
   }
@@ -186,7 +210,7 @@
   </div>
 
   <footer>
-    ✍️জ্ঞান হোক মুক্তির চাবি 🔓
+    ✍️ প্রস্তুত করেছেন: আর্নয় | জ্ঞান হোক মুক্তির চাবি 🔓
   </footer>
 </body>
 </html>
