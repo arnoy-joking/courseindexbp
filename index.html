@@ -1,189 +1,192 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Grand Archive of Sciences</title>
-  <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2928/2928062.png" type="image/png"> <style>
-    /* Reset and base styles */
+  <title>জ্ঞানের জগতে আপনাকে স্বাগতম</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;700&display=swap" rel="stylesheet">
+  <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: 'Times New Roman', serif; /* Maintaining a classic feel */
+      font-family: 'Noto Sans Bengali', sans-serif;
     }
 
     body {
-      background: linear-gradient(to bottom, #1a2a3a, #0a0a1a); /* Deeper, more formal gradient */
+      background: radial-gradient(circle, #1e1e1e, #111);
       color: #e0e0e0;
+      padding: 2rem;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 3rem;
-      background-image: url('https://www.transparenttextures.com/patterns/lined-paper.png'); /* Subtle textured paper overlay */
+      backdrop-filter: blur(8px);
     }
 
     h1 {
-      font-size: 3.8rem;
-      margin-bottom: 0.8rem;
-      color: #6a86b7; /* Lavender light for a formal, distinguished look */
-      text-shadow: 0 0 10px rgba(230, 230, 250, 0.7), 0 0 20px rgba(230, 230, 250, 0.4); /* Softer, more elegant glow */
+      font-size: 2.5rem;
       text-align: center;
-      white-space: pre-line;
-      font-family: 'Georgia', serif;
-      letter-spacing: 0.05em; /* Slightly wider letter spacing for formality */
-    }
-
-    p {
-      font-size: 1.3rem;
-      margin-bottom: 3rem;
-      color: #c0c0c0;
-      text-align: center;
-      white-space: pre-line;
-      line-height: 1.6;
+      margin-bottom: 1.5rem;
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 1rem 2rem;
+      border-radius: 20px;
+      backdrop-filter: blur(6px);
+      box-shadow: 0 4px 20px rgba(255, 255, 255, 0.05);
     }
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 2.5rem;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
       width: 100%;
-      max-width: 1300px;
+      max-width: 1200px;
     }
 
     .card {
-      display: block;
-      background: rgba(30, 45, 60, 0.7); /* Deeper, more subdued card background */
-      padding: 2rem;
-      border-radius: 15px; /* Slightly less rounded */
-      border: 1px solid rgba(173, 216, 230, 0.4); /* Light blue border for elegance */
-      transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-      cursor: pointer;
-      text-decoration: none;
-      color: inherit;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 20px;
+      padding: 1.5rem;
+      transition: 0.3s ease-in-out;
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
       position: relative;
       overflow: hidden;
-    }
-
-    .card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(45deg, rgba(173,216,230,0.05) 0%, transparent 50%, rgba(173,216,230,0.05) 100%);
-      opacity: 0;
-      transition: opacity 0.3s ease-in-out;
-    }
-
-    .card:hover::before {
-      opacity: 1;
+      color: #f1f1f1;
+      text-decoration: none;
     }
 
     .card:hover {
-      transform: translateY(-5px); /* Subtle lift */
-      box-shadow: 0 8px 30px rgba(173, 216, 230, 0.3), 0 0 20px rgba(173, 216, 230, 0.1); /* Elegant, subtle glow */
-      background: rgba(40, 55, 70, 0.8); /* Slightly lighter on hover */
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);
     }
 
     .card h2 {
-      font-size: 1.7rem;
-      margin-bottom: 0.7rem;
-      color: #b0c4de; /* Steel blue for titles */
-      white-space: pre-line;
-      font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
-      letter-spacing: 0.03em;
+      font-size: 1.4rem;
+      margin-bottom: 0.5rem;
     }
 
     .card p {
-      font-size: 1.05rem;
-      color: #d3d3d3;
-      margin-bottom: 0.5rem;
-      line-height: 1.5;
+      font-size: 1rem;
+      opacity: 0.9;
+    }
+
+    .quote {
+  position: relative;
+  margin-top: 1rem;
+  font-size: 0.85rem;
+  opacity: 0;
+  transition: all 0.4s ease;
+  color: #cde0f3;
+  font-style: italic;
+  background: rgba(255, 255, 255, 0.07);
+  padding: 6px 10px;
+  border-radius: 12px;
+  backdrop-filter: blur(4px);
+  max-width: 100%;
+  display: inline-block;
+}
+
+    .card:hover .quote {
+      opacity: 1;
     }
 
     footer {
-      margin-top: 4rem;
-      font-size: 1.05rem;
-      color: #909090;
+      margin-top: 3rem;
+      font-size: 1rem;
       text-align: center;
-      font-style: italic;
+      color: #aaa;
     }
 
-    /* Responsive adjustments */
     @media (max-width: 768px) {
-      h1 {
-        font-size: 2.5rem;
-      }
-
-      p {
-        font-size: 1rem;
-      }
-
-      .card {
-        padding: 1.5rem;
-      }
-
-      .card h2 {
-        font-size: 1.4rem;
-      }
-
-      .card p {
-        font-size: 0.95rem;
-      }
+  h1 {
+    font-size: 1.8rem;
+    padding: 1rem;
+  }
+  .grid {
+    grid-template-columns: 1fr;
+  }
+  .card {
+    padding: 1.2rem;
+  }
+  .card h2 {
+    font-size: 1.2rem;
+  }
+  .card p {
+    font-size: 0.95rem;
+  }
+}
     }
   </style>
 </head>
 <body>
-  <h1>The Grand Archive of Scientific Disciplines 📚</h1>
-  <p>Peruse the meticulously cataloged collections<br>of knowledge that define our understanding of the universe.</p>
+  <div style="text-align: center; margin-bottom: 2rem;">
+  <h1>📚 জ্ঞানের জগতে আপনাকে স্বাগতম</h1>
+  <p style="font-size: 1.1rem; margin-top: 0.5rem; color: #cccccc; line-height: 1.6;">
+    এখানে প্রতিটি বিষয় সাজানো হয়েছে বুঝে পড়ার জন্য।<br>
+    মোবাইল কিংবা কম্পিউটার – যে যেভাবে পড়ুক, জ্ঞান সবার জন্য।
+  </p>
+</div>
 
   <div class="grid">
     <a class="card" href="https://arnoy-joking.github.io/physics-1st-paper/">
-      <h2>🌌 Physical Sciences: 1</h2>
-      <p>Exploring the fundamental principles of motion, forces, and energy within physical systems.</p>
+      <h2>🌌 পদার্থবিজ্ঞান: প্রথম পত্র</h2>
+      <p>গতি ও বলের মূল ধারণাগুলো বিশ্লেষণ করা হয়েছে।</p>
+      <div class="quote">মহাকর্ষের টানে আমরা সবসময় নিচে পড়ি, কিন্তু মস্তিষ্কে উঁচুতে উঠি।</div>
     </a>
+
     <a class="card" href="https://arnoy-joking.github.io/physics2ndpaper/">
-      <h2>🌌 Physical Sciences: 2</h2>
-      <p>Investigating the nature of electricity, magnetism, waves, and the tenets of quantum and relativistic physics.</p>
+      <h2>🌌 পদার্থবিজ্ঞান: দ্বিতীয় পত্র</h2>
+      <p>বিদ্যুৎ, চৌম্বকত্ব, তরঙ্গ ও আধুনিক পদার্থবিজ্ঞান।</p>
+      <div class="quote">আলোই ভবিষ্যতের শক্তি।</div>
     </a>
 
     <a class="card" href="https://arnoy-joking.github.io/chemistry1stpaper/">
-      <h2>🧪 Chemical Sciences: 1</h2>
-      <p>Analyzing atomic structure, chemical bonding, and the periodic properties of elements.</p>
+      <h2>🧪 রসায়ন: প্রথম পত্র</h2>
+      <p>পরমাণুর গঠন, বন্ধন ও পর্যায় সারণি।</p>
+      <div class="quote">রসায়নে লুকিয়ে আছে বস্তুজগতের রহস্য।</div>
     </a>
+
     <a class="card" href="https://arnoy-joking.github.io/chemistry2ndpaper/">
-      <h2>🧪 Chemical Sciences: Inorganic</h2>
-      <p>Delving into chemical reactions, stoichiometry, and practical laboratory methodologies.</p>
+      <h2>🧪 রসায়ন: অজৈব অংশ</h2>
+      <p>রাসায়নিক বিক্রিয়া ও পরীক্ষাগার পদ্ধতি।</p>
+      <div class="quote">প্রতিক্রিয়াই পরিবর্তনের মূল।</div>
     </a>
-     <a class="card" href="https://arnoy-joking.github.io/organicochemistrico/">
-      <h2>🧪 Organic Chemistry: Carbon Compounds & Analysis</h2>
-      <p>A comprehensive study of carbon-based compounds and their analytical techniques.</p>
+
+    <a class="card" href="https://arnoy-joking.github.io/organicochemistrico/">
+      <h2>🧪 রসায়ন: জৈব</h2>
+      <p>কার্বনভিত্তিক যৌগের গঠন ও বিক্রিয়া প্রক্রিয়া।</p>
+      <div class="quote">জীবনের গন্ধ রসায়নে লুকিয়ে আছে।</div>
     </a>
 
     <a class="card" href="https://arnoy-joking.github.io/biology1st/">
-      <h2>🌿 Biological Sciences: 1</h2>
-      <p>Examining the intricacies of cell biology, genetics, and the molecular foundations of life.</p>
+      <h2>🌿 জীববিজ্ঞান: প্রথম পত্র</h2>
+      <p>কোষ, জিন ও জীবনের মলিকুলার ভিত্তি।</p>
+      <div class="quote">একটি কোষই একটি মহাবিশ্ব।</div>
     </a>
+
     <a class="card" href="https://arnoy-joking.github.io/biology-2nd-paper/">
-      <h2>🌿 Biological Sciences: 2</h2>
-      <p>Investigating ecosystems, evolutionary processes, and the functions of living organisms.</p>
+      <h2>🌿 জীববিজ্ঞান: দ্বিতীয় পত্র</h2>
+      <p>পরিবেশ, বিবর্তন ও জীবের কার্যপ্রণালি।</p>
+      <div class="quote">জীবন মানেই পরিবর্তন।</div>
     </a>
 
     <a class="card" href="https://arnoy-joking.github.io/hmath1stpaper/">
-      <h2>📐 Advanced Mathematics: 1</h2>
-      <p>Developing robust analytical skills through algebraic reasoning, trigonometric functions, and geometric principles.</p>
+      <h2>📐 উচ্চতর গণিত: প্রথম পত্র</h2>
+      <p>বীজগণিত ও ত্রিকোণমিতি ভিত্তিক সমস্যা সমাধান।</p>
+      <div class="quote">গণিত হল চিন্তার ভাষা।</div>
     </a>
+
     <a class="card" href="https://arnoy-joking.github.io/hmath2ndpaper/">
-      <h2>📊 Advanced Mathematics: 2</h2>
-      <p>Mastering differential and integral calculus, vector analysis, and statistical methods for complex problem-solving.</p>
+      <h2>📊 উচ্চতর গণিত: দ্বিতীয় পত্র</h2>
+      <p>অবকলন, সমাকলন, ভেক্টর ও পরিসংখ্যান।</p>
+      <div class="quote">সমাধান প্রতিটি সমস্যার ভিতরে লুকিয়ে থাকে।</div>
     </a>
   </div>
 
   <footer>
-    Curated by Arnoy in the pursuit of knowledge.
+    ✍️জ্ঞান হোক মুক্তির চাবি 🔓
   </footer>
 </body>
 </html>
