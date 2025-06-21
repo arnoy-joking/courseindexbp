@@ -21,23 +21,20 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
   overflow-x: hidden;
   scroll-behavior: smooth;
 }
 
     h1 {
-      font-size: 2.5rem;
-      text-align: center;
-      margin-bottom: 1.5rem;
-      color: #ffffff;
-      background: rgba(255, 255, 255, 0.05);
-      padding: 1rem 2rem;
-      border-radius: 20px;
-      backdrop-filter: blur(6px);
-      box-shadow: 0 4px 20px rgba(255, 255, 255, 0.05);
-    }
+  font-size: 2.5rem;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 1rem 2rem;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(255, 255, 255, 0.05);
+}
 
     .grid {
       display: grid;
@@ -48,18 +45,15 @@
     }
 
     .card {
-  background: rgba(255, 255, 255, 0.04);
+  background: #1c1c1c;
   border-radius: 16px;
   padding: 1rem;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  border: 1px solid #2c2c2c;
   position: relative;
   overflow: hidden;
   color: #f1f1f1;
   text-decoration: none;
-  will-change: transform;
 }
 
     .card:hover {
@@ -78,25 +72,21 @@
     }
 
     .quote {
-  position: relative;
   margin-top: 1rem;
   font-size: 0.85rem;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  color: #cde0f3;
+  color: #a0c4f3;
   font-style: italic;
-  background: rgba(255, 255, 255, 0.05);
+  background: #2a2a2a;
   padding: 6px 10px;
-  border-radius: 12px;
-  backdrop-filter: blur(3px);
+  border-radius: 8px;
   display: inline-block;
   max-width: 100%;
+  opacity: 1;
+  transition: none;
   pointer-events: none;
 }
 
-    .card:hover .quote {
-      opacity: 1;
-    }
+    /* Removed hover-based quote visibility */
 
     footer {
       margin-top: 3rem;
