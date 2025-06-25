@@ -255,12 +255,6 @@ case 'l':
   player.currentTime = Math.min(player.duration, player.currentTime + 10);
   showToast(`⏩ +10s`);
   break;
-
-    case 'f':
-      event.preventDefault();
-      player.fullscreen.toggle();
-      break;
-        
   });
 
   // Save time every 10s
