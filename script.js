@@ -1,4 +1,4 @@
- const player = new Plyr('#player', {
+  const player = new Plyr('#player', {
     controls: ['play-large', 'rewind', 'play', 'fast-forward', 'progress', 'current-time', 'settings', 'pip', 'fullscreen'],
     youtube: { noCookie: true, rel: 0, showinfo: 0, modestbranding: 1 },
     settings: ['quality', 'speed'],
@@ -255,6 +255,8 @@ case 'l':
   player.currentTime = Math.min(player.duration, player.currentTime + 10);
   showToast(`⏩ +10s`);
   break;
+
+    }
   });
 
   // Save time every 10s
