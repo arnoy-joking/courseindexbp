@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Existing scripts for video and XLSX handling -->
+  <script type="text/javascript">
+    var gk_isXlsx = false;
+    var gk_xlsxFileLookup = {};
+    var gk_fileData = {};
+    function filledCell(cell) {
+      return cell !== '' && cell != null;
+    }
+    function loadFileData(filename) {
+      if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+        try {
+          var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+          var firstSheetName = workbook.SheetNames[0];
+          var worksheet = workbook.Sheets[firstSheetName];
+          var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+          var filteredData = jsonData.filter(row => row.some(filledCell));
+          var headerRowIndex = filteredData.findIndex((row, index) =>
+            row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+          );
+          if (headerRowIndex === -1 || headerRowIndex > 25) headerRowIndex = 0;
+          var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex));
+          csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+          return csv;
+        } catch (e) {
+          console.error(e);
+          return "";
+        }
+      }
+      return gk_fileData[filename] || "";
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>পড় মন দিয়া</title>
+  <link rel="icon" href="https://cdn-icons-png.freepik.com/512/7856/7856382.png" type="image/png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://cdn.plyr.io/3.7.8/plyr.css" rel="stylesheet">
+   <link rel="stylesheet" href="styles.css" />
+  </head>
+<body class="font-sans">
+  <header class="bg-black text-white p-4 flex items-center">
+    <img src="https://bondipathshala.com.bd/files/logo.png" alt="Bondi Pathshala Logo" class="h-10">
+    <h1 class="ml-4 text-xl font-bold">পড়ালেখা করা ভালো</h1>
+  </header>
+
+  <div class="container mx-auto p-4 flex flex-col lg:flex-row gap-4">
+    <div class="lg:w-3/4 bg-white rounded-lg shadow-md p-4">
+      <h2 class="text-lg font-semibold mb-4 text-gray-100">Live Class</h2>
+      <div style="position: relative;"> <!-- Wrapper for player and custom share button -->
+        <div id="player" data-plyr-provider="youtube" data-plyr-embed-id="RUQcm3vIbWo"></div>
+        <button id="customShareBtn" title="Share" style="position: absolute; top: 15px; right: 15px; z-index: 20; background: none; border: none; cursor: pointer; padding: 0;">
+          <i class="fas fa-share-alt" style="color: white; font-size: 20px; filter: drop-shadow(0 1px 1px rgba(0,0,0,0.5));"></i>
+        </button>
+      </div>
+      <div class="flex space-x-4 mt-4">
+        <a id="downloadPdfBtn" href="https://www.bondipathshala.com.bd/pdf/20240527-1716748184-LRH05IsN.pdf" target="_blank" class="inline-block bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+          <i class="fas fa-file-pdf mr-2"></i>Download PDF
+        </a>
+        <button id="downloadEmojiBtn" class="download-emoji">
+          <i class="fas fa-smile mr-2"></i>Open on YouTube
+        </button>
+      </div>
+    </div>
+
+    <div class="lg:w-1/4 bg-white rounded-lg shadow-md p-4">
+      <button id="openAddVideoBtn" class="w-full bg-black text-white p-2 rounded mb-4 fake-button">
+        <i class="fas fa-plus mr-2"></i>Add New Class
+      </button>
+
+      <h2 class="text-lg font-semibold mb-4 text-gray-100">Class List</h2>
+      <ul id="classList" class="space-y-2 max-h-96 overflow-y-auto">
+             <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="rP8LE1_gP34" data-nname="শ্রেণিবিন্যাস পর্ব-০১" data-npdf="20240819-1724009668-olLQlzVm.pdf">
+  শ্রেণিবিন্যাস পর্ব-০১ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="kDNtMk_0YUs" data-nname="শ্রেণিবিন্যাস পর্ব-০২" data-npdf="20240820-1724174906-Ur9S7lET.pdf">
+  শ্রেণিবিন্যাস পর্ব-০২ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="szsDBvNMIzY" data-nname="শ্রেণিবিন্যাস পর্ব-০৩" data-npdf="20240828-1724790513-1MagDFK2.pdf">
+  শ্রেণিবিন্যাস পর্ব-০৩ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="JinfFz800L0" data-nname="শ্রেণিবিন্যাস পর্ব-০৪" data-npdf="20240830-1724967189-4ypMcAVT.pdf">
+  শ্রেণিবিন্যাস পর্ব-০৪ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="K4GwLgpyeRs" data-nname="শ্রেণিবিন্যাস পর্ব-০৫" data-npdf="20240904-1725434335-VuapEXYp.pdf">
+  শ্রেণিবিন্যাস পর্ব-০৫ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="55x5AFoBf-k" data-nname="শ্রেণিবিন্যাস পর্ব-০৬" data-npdf="20240906-1725642024-RyRhHzMS.pdf">
+  শ্রেণিবিন্যাস পর্ব-০৬ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="TYGm6YJ-gk8" data-nname="হাইড্রা - পর্ব ০১" data-npdf="20240918-1726604272-F24BJszJ.pdf">
+  হাইড্রা - পর্ব ০১ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="3Fj6p3y2deQ" data-nname="হাইড্রা - পর্ব ০২" data-npdf="20240923-1727039208-NDagR8Kj.pdf">
+  হাইড্রা - পর্ব ০২ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="Wl7AoOlx6ds" data-nname="হাইড্রা - পর্ব ০৩" data-npdf="20240924-1727197597-yjw8of2d.pdf">
+  হাইড্রা - পর্ব ০৩ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="LJrwhc6Gx_Q" data-nname="হাইড্রা - পর্ব ০৪" data-npdf="20240926-1727364590-8mTjQSen.pdf">
+  হাইড্রা - পর্ব ০৪ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="TFGqlJbS348" data-nname="ঘাস ফড়িং - পর্ব ০১" data-npdf="20241004-1727985138-IKXMHBiF.pdf">
+  ঘাস ফড়িং - পর্ব ০১ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="zHYo2hMhxNQ" data-nname="ঘাসফড়িং - পর্ব ০২" data-npdf="20241005-1728137940-bOT1K0wY.pdf">
+  ঘাসফড়িং - পর্ব ০২ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="ci5bZETumAM" data-nname="ঘাসফড়িং - পর্ব ০৩" data-npdf="20241006-1728236020-IBT0LxBz.pdf">
+  ঘাসফড়িং - পর্ব ০৩ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="c43AjKMQGFc" data-nname="ঘাসফড়িং - পর্ব ০৪" data-npdf="20241009-1728419233-TQkbXkud.pdf">
+  ঘাসফড়িং - পর্ব ০৪ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="PO3jdUiR8tk" data-nname="ঘাস ফড়িং - পর্ব ০৫" data-npdf="20241016-1729016022-zV6WezLT.pdf">
+  ঘাস ফড়িং - পর্ব ০৫ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="9PwMq_X_kOs" data-nname="ঘাসফড়িং - পর্ব ০৬" data-npdf="20241102-1730490798-Sd2NI1oz.pdf">
+  ঘাসফড়িং - পর্ব ০৬ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="zLzNvQ2DIiA" data-nname="রুই মাছ - পর্ব ০১" data-npdf="20241104-1730660140-FzjYnaWg.pdf">
+  রুই মাছ - পর্ব ০১ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="00nf-TlRBac" data-nname="রুই মাছ - পর্ব ০২" data-npdf="20241108-1731007405-gSnyCwTu.pdf">
+  রুই মাছ - পর্ব ০২ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="nA73vl3LH7o" data-nname="রুই মাছ - পর্ব ০৩" data-npdf="20241111-1731275925-hwjDhf9F.pdf">
+  রুই মাছ - পর্ব ০৩ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="Jb6XBj3fXZA" data-nname="পরিপাক ও শ্বসন - পর্ব ০১" data-npdf="20241115-1731619700-41BIwRVS.pdf">
+  পরিপাক ও শ্বসন - পর্ব ০১ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="mMCXd_rEt2U" data-nname="পরিপাক ও শ্বসন - পর্ব ০২" data-npdf="20241117-1731862225-XbZgyQU7.pdf">
+  পরিপাক ও শ্বসন - পর্ব ০২ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="60hWCqKGV6U" data-nname="পরিপাক ও শ্বসন - পর্ব ০৩" data-npdf="20241120-1732041714-9777Y3Cs.pdf">
+  পরিপাক ও শ্বসন - পর্ব ০৩ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="s935JRIdMyM" data-nname="পরিপাক ও শ্বসন - পর্ব ০৪" data-npdf="20241122-1732225116-wrtA0tgz.pdf">
+  পরিপাক ও শ্বসন - পর্ব ০৪ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="Vv2b6rJv_zE" data-nname="পরিপাক ও শ্বসন - পর্ব ০৫" data-npdf="20241124-1732463567-v9IEGGLW.pdf">
+  পরিপাক ও শ্বসন - পর্ব ০৫ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="s0BX02zrLw4" data-nname="পরিপাক ও শ্বসন - পর্ব ০৬" data-npdf="20241128-1732815117-eEqdwG43.pdf">
+  পরিপাক ও শ্বসন - পর্ব ০৬ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="sZUbgh74wzk" data-nname="রক্ত - পর্ব ০১" data-npdf="20241218-1734519902-I0Aexgkb.pdf">
+  রক্ত - পর্ব ০১ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="cZHR8omN05U" data-nname="রক্ত - পর্ব ০২" data-npdf="20241218-1734460827-DEXn3iSH.pdf">
+  রক্ত - পর্ব ০২ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="GbOKpgg51gM" data-nname="রক্ত - পর্ব ০৩" data-npdf="20241220-1734637138-ZmygmA4I.pdf">
+  রক্ত - পর্ব ০৩ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="5zBcyNKEbEM" data-nname="রক্ত - পর্ব ৪.১" data-npdf="20241223-1734903660-Ng2G0WNa.pdf">
+  রক্ত - পর্ব ৪.১ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="3vIzm438i7c" data-nname="রক্ত - পর্ব ৪.২" data-npdf="20241223-1734903660-Ng2G0WNa.pdf">
+  রক্ত - পর্ব ৪.২ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="Fgjv2jnof24" data-nname="রক্ত - পর্ব ০৫" data-npdf="20241225-1735069272-NFI9nqec.pdf">
+  রক্ত - পর্ব ০৫ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="9EbFdQ01VxU" data-nname="রক্ত - পর্ব ০৬" data-npdf="20241229-1735486597-e6z9alus.pdf">
+  রক্ত - পর্ব ০৬ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="Iq9dz_5P094" data-nname="শ্বসন ও শ্বাসক্রিয়া - পর্ব ০১" data-npdf="20250103-1735844588-Oz1hl5TP.pdf">
+  শ্বসন ও শ্বাসক্রিয়া - পর্ব ০১ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="F51BGxZJuNk" data-nname="শ্বসন ও শ্বাসক্রিয়া - পর্ব ০২" data-npdf="20250105-1736088040-UBfbrp7Q.pdf">
+  শ্বসন ও শ্বাসক্রিয়া - পর্ব ০২ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="VSET0DDylfk" data-nname="শ্বসন ও শ্বাসক্রিয়া - পর্ব ০৩" data-npdf="20250108-1736282558-fgxaF3fZ.pdf">
+  শ্বসন ও শ্বাসক্রিয়া - পর্ব ০৩ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="mDzByfRid28" data-nname="শ্বসন ও শ্বাসক্রিয়া - পর্ব ০৪" data-npdf="20250113-1736705661-01ZlP7hy.pdf">
+  শ্বসন ও শ্বাসক্রিয়া - পর্ব ০৪ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="IMoHsW_UlyI" data-nname="চলন ও অঙ্গসঞ্চালন - পর্ব ১.১" data-npdf="20250224-1740337724-7X0aEhoM.pdf">
+  চলন ও অঙ্গসঞ্চালন - পর্ব ১.১ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="OXipDx_5TVw" data-nname="চলন ও অঙ্গসঞ্চালন - পর্ব ১.২" data-npdf="20250224-1740337724-7X0aEhoM.pdf">
+  চলন ও অঙ্গসঞ্চালন - পর্ব ১.২ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="zK09LVU0VNE" data-nname="চলন ও অঙ্গচালনা - পর্ব ২.১" data-npdf="20250224-1740337249-xYj8UT3G.pdf">
+  চলন ও অঙ্গচালনা - পর্ব ২.১ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="JVCP4JPSftI" data-nname="চলন ও অঙ্গচালনা - পর্ব ২.২" data-npdf="20250224-1740337249-xYj8UT3G.pdf">
+  চলন ও অঙ্গচালনা - পর্ব ২.২ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="lRQyr4CfsXQ" data-nname="চলন ও অঙ্গচালনা - পর্ব ০৩" data-npdf="20250226-1740510516-x7Y9iSDv.pdf">
+  চলন ও অঙ্গচালনা - পর্ব ০৩ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="0WtmhAokrN8" data-nname="চলন ও অঙ্গচালনা - পর্ব ৪.১" data-npdf="20250306-1741199611-asrakTkZ.pdf">
+  চলন ও অঙ্গচালনা - পর্ব ৪.১ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="9WaCJH-dvVQ" data-nname="চলন ও অঙ্গচালনা - পর্ব ৪.২" data-npdf="20250306-1741199611-asrakTkZ.pdf">
+  চলন ও অঙ্গচালনা - পর্ব ৪.২ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="zSpJ_lvaDNY" data-nname="চলন ও অঙ্গচালনা - পর্ব ০৫" data-npdf="20250414-1744636851-yNq9UyYk.pdf">
+  চলন ও অঙ্গচালনা - পর্ব ০৫ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="OwiYDTmZRxE" data-nname="জেনেটিক্স ও বিবর্তন - পর্ব ০১" data-npdf="20250428-1745784799-dsVpqbTq.pdf">
+  জেনেটিক্স ও বিবর্তন - পর্ব ০১ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="nRtpCHPiHZE" data-nname="জেনেটিক্স ও বিবর্তন - পর্ব ০২" data-npdf="20250430-1745958944-RXlARkHM.pdf">
+  জেনেটিক্স ও বিবর্তন - পর্ব ০২ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="SUcyKsbLTGs" data-nname="জেনেটিক্স ও বিবর্তন - পর্ব ০৩" data-npdf="20250502-1746131170-48Sll5FY.pdf">
+  জেনেটিক্স ও বিবর্তন - পর্ব ০৩ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="xsSFafcvTtQ" data-nname="জেনেটিক্স ও বিবর্তন - পর্ব ০৪" data-npdf="20250505-1746386146-CA34ecwq.pdf">
+  জেনেটিক্স ও বিবর্তন - পর্ব ০৪ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="dsqsZRTvj1g" data-nname="জেনেটিক্স ও বিবর্তন - পর্ব ০৫" data-npdf="20250509-1746733354-njvqMzj0.pdf">
+  জেনেটিক্স ও বিবর্তন - পর্ব ০৫ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="m53a25pAbw0" data-nname="জেনেটিক্স ও বিবর্তন - পর্ব ০৬" data-npdf="20250510-1746818647-ZC3OfalQ.pdf">
+  জেনেটিক্স ও বিবর্তন - পর্ব ০৬ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="3ZHC1UHQ0gw" data-nname="বর্জ্য নিস্কাশন - পর্ব ০১" data-npdf="20250514-1747164852-oSBGQkKd.pdf">
+  বর্জ্য নিস্কাশন - পর্ব ০১ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="NHj-nsSUnYk" data-nname="বর্জ্য নিস্কাশন - পর্ব ০২" data-npdf="20250516-1747341290-nTofrMsv.pdf">
+  বর্জ্য নিস্কাশন - পর্ব ০২ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="a2PNBS5AJTc" data-nname="বর্জ্য নিস্কাশন - পর্ব ০৩" data-npdf="20250523-1747950623-0BLfXm9E.pdf">
+  বর্জ্য নিস্কাশন - পর্ব ০৩ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="xRqOof9RrL0">
+  রেচন
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="c4eoZYzkS9E">
+  সমন্বয় ও নিয়ন্ত্রণ - পর্ব ০১
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="ZBIG8_mY3mg" data-nname="সমন্বয় ও নিয়ন্ত্রণ - পর্ব ০২" data-npdf="20250615-1749935722-cV7zl2lX.pdf">
+  সমন্বয় ও নিয়ন্ত্রণ - পর্ব ০২ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="4qr9Yv5CW-g" data-nname="সমন্বয় ও নিয়ন্ত্রণ - পর্ব ০৩" data-npdf="20250615-1749935785-G0DMziQY.pdf">
+  সমন্বয় ও নিয়ন্ত্রণ - পর্ব ০৩ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="gj2xoYZuV9s">
+  সমন্বয় ও নিয়ন্ত্রণ - পর্ব ০৪
+</li>
+      </ul>
+    </div>
+  </div>
+
+<footer class="bg-gray-900 text-white py-8 px-4 md:px-8 relative overflow-hidden">
+  <!-- Neon Glow Background Effect -->
+  <div class="absolute inset-0 bg-gradient-to-r from-pink-500/20 via-cyan-500/20 to-lime-500/20 animate-pulse"></div>
+  
+  <div class="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left relative z-10">
+    <!-- Brand/Logo Section -->
+    <div>
+      <h2 class="text-3xl font-extrabold tracking-wider text-lime-400>Bondi Pathshala</h2>
+      <p class="mt-2 text-lime-300 t-medium">Bondi Pathshala</p>
+    </div>
+
+    <!-- Navigation Links -->
+    <div>
+      <h3 class="text-lg font-bold text-lime-400 mb-4 drop-shadow-[0_0_8px_rgba(132,204,22,0.6)]">মন ফ্রেশ থাকলে পড়া বেশি মনে থাকে!</h3>
+      <ul class="space-y-2 text-cyan-300 text-sm">
+  <li>পড়ায় ঝড় তুলো!</li>
+  <li>রঙিন নোট ফাটাও!</li>
+  <li> বই পড়ো!</li>
+      </ul>
+    </div>
+
+    <!-- Social Media & Contact -->
+    <div>
+      <h3 class="text-lg font-bold text-lime-400 mb-4 drop-shadow-[0_0_8px_rgba(132,204,22,0.6)]">Connect With Us</h3>
+      <div class="flex justify-center md:justify-start space-x-4 mb-4">
+        <a href="#" class="hover:scale-110 transform transition-transform duration-300 drop-shadow-[0_0_6px_rgba(236,72,153,0.5)]">
+          <svg class="w-6 h-6 fill-current text-cyan-300 hover:text-pink-400" viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/>
+          </svg>
+        </a>
+        <a href="#" class="hover:scale-110 transform transition-transform duration-300 drop-shadow-[0_0_6px_rgba(236,72,153,0.5)]">
+          <svg class="w-6 h-6 fill-current text-cyan-300 hover:text-pink-400" viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 14v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1h-6v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+          </svg>
+        </a>
+      </div>
+      <p class="text-cyan-300 text-sm font-medium">Email: <a href="mailto:arnoy799@gmail.com" class="hover:text-pink-400 transition-colors duration-300 hover:drop-shadow-[0_0_6px_rgba(236,72,153,0.5)]">arnoy799@gmail.com</a></p>
+    </div>
+  </div>
+
+  <!-- Bottom Bar -->
+  <div class="border-t border-pink-500/50 mt-8 pt-4 text-center text-cyan-300 text-sm font-medium">
+    <p>© 2025 Bondi Pathshala. All rights reserved.</p>
+  </div>
+</footer>
+<div id="playerToast"
+     style="position: fixed; bottom: 10%; left: 50%; transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.8); color: white;
+            padding: 10px 20px; border-radius: 8px;
+            font-size: 16px; opacity: 0; pointer-events: none;
+            transition: opacity 0.3s ease;">
+<script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

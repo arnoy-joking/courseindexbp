@@ -256,7 +256,11 @@ case 'l':
   showToast(`⏩ +10s`);
   break;
 
-    }
+    case 'f':
+      event.preventDefault();
+      player.fullscreen.toggle();
+      break;
+        
   });
 
   // Save time every 10s
