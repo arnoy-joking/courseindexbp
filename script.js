@@ -1,9 +1,9 @@
-  const player = new Plyr('#player', {
-    controls: ['play-large', 'rewind', 'play', 'fast-forward', 'progress', 'current-time', 'settings', 'pip', 'fullscreen'],
-    youtube: { noCookie: true, rel: 0, showinfo: 0, modestbranding: 1 },
-    settings: ['quality', 'speed'],
-    speed: { selected: 1, options: [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2] }
-  });
+const player = new Plyr('#player', {
+  controls: ['play-large', 'rewind', 'play', 'fast-forward', 'progress', 'current-time', 'settings', 'pip', 'fullscreen'],
+  youtube: { noCookie: true, rel: 0, showinfo: 0, modestbranding: 1 },
+  settings: ['quality', 'speed'],
+  speed: { selected: 1, options: [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2] }
+});
 
 const container = player.elements.container;
 
@@ -77,92 +77,92 @@ function hideSkipButtons() {
 player.on('pause', showSkipButtons);
 player.on('play', hideSkipButtons);
 
-  function setHighestQuality() {
-    const availableQualities = player.quality?.options;
-    if (availableQualities && availableQualities.length > 0) {
-      const sorted = availableQualities.filter(q => q !== 'auto').sort((a, b) => parseInt(b) - parseInt(a));
-      if (sorted.length > 0) {
-        player.quality = sorted[0];
-        console.log(`Set highest quality: ${sorted[0]}`);
-      }
+function setHighestQuality() {
+  const availableQualities = player.quality?.options;
+  if (availableQualities && availableQualities.length > 0) {
+    const sorted = availableQualities.filter(q => q !== 'auto').sort((a, b) => parseInt(b) - parseInt(a));
+    if (sorted.length > 0) {
+      player.quality = sorted[0];
+      console.log(`Set highest quality: ${sorted[0]}`);
     }
   }
+}
 
-  function attachClassItemListeners() {
-    const classItems = document.querySelectorAll('.class-item');
-    const downloadPdfBtn = document.getElementById('downloadPdfBtn');
+function attachClassItemListeners() {
+  const classItems = document.querySelectorAll('.class-item');
+  const downloadPdfBtn = document.getElementById('downloadPdfBtn');
 
-    classItems.forEach(item => {
-      if (item._eventListener) item.removeEventListener('click', item._eventListener);
-    });
+  classItems.forEach(item => {
+    if (item._eventListener) item.removeEventListener('click', item._eventListener);
+  });
 
-    classItems.forEach(item => {
-      const listener = () => {
-        const videoId = item.dataset.vid;
-        currentVideoId = videoId;
-        localStorage.setItem('lastSelectedVideo', videoId);
+  classItems.forEach(item => {
+    const listener = () => {
+      const videoId = item.dataset.vid;
+      currentVideoId = videoId;
+      localStorage.setItem('lastSelectedVideo', videoId);
 
-        player.source = {
-          type: 'video',
-          sources: [{ src: videoId, provider: 'youtube' }]
-        };
-
-        const customShareBtn = document.getElementById('customShareBtn');
-        if (customShareBtn) {
-          customShareBtn.addEventListener('click', () => {
-            if (currentVideoId) {
-              const url = `https://www.youtube.com/watch?v=${currentVideoId}`;
-              navigator.clipboard.writeText(url).then(() => alert('Video link copied!'))
-                .catch(() => alert('Copy failed.'));
-            } else alert("No video selected.");
-          });
-        }
-
-        classItems.forEach(i => i.classList.remove('bg-blue-200'));
-        item.classList.add('bg-blue-200');
-
-        const pdfLink = item.dataset.npdf;
-        if (pdfLink) {
-          downloadPdfBtn.href = `https://www.bondipathshala.com.bd/pdf/${pdfLink}`;
-          downloadPdfBtn.classList.remove('hidden');
-        } else {
-          downloadPdfBtn.classList.add('hidden');
-        }
+      player.source = {
+        type: 'video',
+        sources: [{ src: videoId, provider: 'youtube' }]
       };
-      item.addEventListener('click', listener);
-      item._eventListener = listener;
-    });
-  }
 
-  attachClassItemListeners();
-
-  // Load stored videos
-  const storedVideos = JSON.parse(localStorage.getItem('customVideos')) || [];
-  const classListUl = document.getElementById('classList');
-  storedVideos.forEach(video => {
-    const li = document.createElement('li');
-    li.className = 'class-item p-2 rounded hover:bg-blue-100 cursor-pointer';
-    li.dataset.vid = video.id;
-    li.dataset.nname = video.title;
-    li.dataset.npdf = video.pdfLink || '';
-    li.innerHTML = `${video.title}${video.pdfLink ? ` <i class="fas fa-file-pdf text-red-500 ml-2"></i>` : ''}`;
-    classListUl.appendChild(li);
-  });
-  attachClassItemListeners();
-
-  // Resume last watched
-  window.addEventListener('DOMContentLoaded', () => {
-    setTimeout(() => {
-      const lastVideoId = localStorage.getItem('lastSelectedVideo');
-      if (lastVideoId) {
-        const lastItem = [...document.querySelectorAll('.class-item')].find(i => i.dataset.vid === lastVideoId);
-        if (lastItem) {
-          lastItem.click();
-          lastItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
+      const customShareBtn = document.getElementById('customShareBtn');
+      if (customShareBtn) {
+        customShareBtn.addEventListener('click', () => {
+          if (currentVideoId) {
+            const url = `https://www.youtube.com/watch?v=${currentVideoId}`;
+            navigator.clipboard.writeText(url).then(() => alert('Video link copied!'))
+              .catch(() => alert('Copy failed.'));
+          } else alert("No video selected.");
+        });
       }
-    }, 3500);
+
+      classItems.forEach(i => i.classList.remove('bg-blue-200'));
+      item.classList.add('bg-blue-200');
+
+      const pdfLink = item.dataset.npdf;
+      if (pdfLink) {
+        downloadPdfBtn.href = `https://www.bondipathshala.com.bd/pdf/${pdfLink}`;
+        downloadPdfBtn.classList.remove('hidden');
+      } else {
+        downloadPdfBtn.classList.add('hidden');
+      }
+    };
+    item.addEventListener('click', listener);
+    item._eventListener = listener;
   });
+}
+
+attachClassItemListeners();
+
+// Load stored videos
+const storedVideos = JSON.parse(localStorage.getItem('customVideos')) || [];
+const classListUl = document.getElementById('classList');
+storedVideos.forEach(video => {
+  const li = document.createElement('li');
+  li.className = 'class-item p-2 rounded hover:bg-blue-100 cursor-pointer';
+  li.dataset.vid = video.id;
+  li.dataset.nname = video.title;
+  li.dataset.npdf = video.pdfLink || '';
+  li.innerHTML = `${video.title}${video.pdfLink ? ` <i class="fas fa-file-pdf text-red-500 ml-2"></i>` : ''}`;
+  classListUl.appendChild(li);
+});
+attachClassItemListeners();
+
+// Resume last watched
+window.addEventListener('DOMContentLoaded', () => {
+  setTimeout(() => {
+    const lastVideoId = localStorage.getItem('lastSelectedVideo');
+    if (lastVideoId) {
+      const lastItem = [...document.querySelectorAll('.class-item')].find(i => i.dataset.vid === lastVideoId);
+      if (lastItem) {
+        lastItem.click();
+        lastItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+  }, 3500);
+});
 
 function showToast(message) {
   const toast = document.getElementById('playerToast');
@@ -174,101 +174,118 @@ function showToast(message) {
   }, 1500);
 }
 
-  // Download button
-  const downloadEmojiBtn = document.getElementById('downloadEmojiBtn');
-  if (downloadEmojiBtn) {
-    downloadEmojiBtn.addEventListener('click', () => {
-      if (currentVideoId) {
-        window.open(`https://www.youtube.com/watch?v=${currentVideoId}`, '_blank');
-      } else {
-        alert("No video selected");
-      }
-    });
-  }
-
-  // Global keyboard shortcuts like YouTube
-  window.addEventListener('keydown', event => {
-    const tag = event.target.tagName.toLowerCase();
-    if (tag === 'input' || tag === 'textarea' || event.target.isContentEditable) return;
-
-    const key = event.key.toLowerCase();
-switch (key) {
-case 'k':
-case ' ':
-  event.preventDefault();
-  player.togglePlay();
-  showToast(player.playing ? 'Playing' : 'Paused');
-  break;
-
-case 'arrowup':
-  event.preventDefault();
-  player.volume = Math.min(1, player.volume + 0.1);
-  showToast(`Volume: ${(player.volume * 100).toFixed(0)}%`);
-  break;
-
-case 'arrowdown':
-  event.preventDefault();
-  player.volume = Math.max(0, player.volume - 0.1);
-  showToast(`Volume: ${(player.volume * 100).toFixed(0)}%`);
-  break;
-
-case ',':
-  {
-    const current = player.speed;
-    const options = player.config.speed.options;
-    const index = options.indexOf(current);
-    if (index > 0) {
-      player.speed = options[index - 1];
-      showToast(`Speed: ${player.speed.toFixed(2)}x`);
-    }
-  }
-  break;
-
-case '.':
-  {
-    const current = player.speed;
-    const options = player.config.speed.options;
-    const index = options.indexOf(current);
-    if (index < options.length - 1) {
-      player.speed = options[index + 1];
-      showToast(`Speed: ${player.speed.toFixed(2)}x`);
-    }
-  }
-  break;
-
-case 'arrowleft':
-  player.currentTime = Math.max(0, player.currentTime - 5);
-  showToast(`⏪ -5s`);
-  break;
-
-case 'arrowright':
-  player.currentTime = Math.min(player.duration, player.currentTime + 5);
-  showToast(`⏩ +5s`);
-  break;
-
-case 'j':
-  player.currentTime = Math.max(0, player.currentTime - 10);
-  showToast(`⏪ -10s`);
-  break;
-
-case 'l':
-  player.currentTime = Math.min(player.duration, player.currentTime + 10);
-  showToast(`⏩ +10s`);
-  break;
-
+// Download button
+const downloadEmojiBtn = document.getElementById('downloadEmojiBtn');
+if (downloadEmojiBtn) {
+  downloadEmojiBtn.addEventListener('click', () => {
+    if (currentVideoId) {
+      window.open(`https://www.youtube.com/watch?v=${currentVideoId}`, '_blank');
+    } else {
+      alert("No video selected");
     }
   });
+}
 
-  // Save time every 10s
-  setInterval(() => {
-    if (player && currentVideoId && !player.paused) {
-      const progressKey = `videoProgress_${currentVideoId}`;
-      localStorage.setItem(progressKey, player.currentTime);
+// Global keyboard shortcuts like YouTube
+window.addEventListener('keydown', event => {
+  const tag = event.target.tagName.toLowerCase();
+  if (tag === 'input' || tag === 'textarea' || event.target.isContentEditable) return;
+
+  const key = event.key.toLowerCase();
+  switch (key) {
+    case 'k':
+    case ' ':
+      event.preventDefault();
+      player.togglePlay();
+      showToast(player.playing ? 'Playing' : 'Paused');
+      break;
+
+    case 'arrowup':
+      event.preventDefault();
+      player.volume = Math.min(1, player.volume + 0.1);
+      showToast(`Volume: ${(player.volume * 100).toFixed(0)}%`);
+      break;
+
+    case 'arrowdown':
+      event.preventDefault();
+      player.volume = Math.max(0, player.volume - 0.1);
+      showToast(`Volume: ${(player.volume * 100).toFixed(0)}%`);
+      break;
+
+    case ',':
+      {
+        const current = player.speed;
+        const options = player.config.speed.options;
+        const index = options.indexOf(current);
+        if (index > 0) {
+          player.speed = options[index - 1];
+          showToast(`Speed: ${player.speed.toFixed(2)}x`);
+        }
+      }
+      break;
+
+    case '.':
+      {
+        const current = player.speed;
+        const options = player.config.speed.options;
+        const index = options.indexOf(current);
+        if (index < options.length - 1) {
+          player.speed = options[index + 1];
+          showToast(`Speed: ${player.speed.toFixed(2)}x`);
+        }
+      }
+      break;
+
+    case 'arrowleft':
+      player.currentTime = Math.max(0, player.currentTime - 5);
+      showToast(`⏪ -5s`);
+      break;
+
+    case 'arrowright':
+      player.currentTime = Math.min(player.duration, player.currentTime + 5);
+      showToast(`⏩ +5s`);
+      break;
+
+    case 'j':
+      player.currentTime = Math.max(0, player.currentTime - 10);
+      showToast(`⏪ -10s`);
+      break;
+
+    case 'l':
+      player.currentTime = Math.min(player.duration, player.currentTime + 10);
+      showToast(`⏩ +10s`);
+      break;
+
+    case 'f':
+      event.preventDefault();
+      player.fullscreen.toggle();
+      showToast(player.fullscreen.active ? 'Fullscreen' : 'Windowed');
+      break;
+  }
+});
+
+// Save time every 10s
+setInterval(() => {
+  if (player && currentVideoId && !player.paused) {
+    const progressKey = `videoProgress_${currentVideoId}`;
+    localStorage.setItem(progressKey, player.currentTime);
+  }
+}, 10000);
+
+// Resume time when ready
+player.on('ready', () => {
+  setHighestQuality();
+  if (currentVideoId) {
+    const progressKey = `videoProgress_${currentVideoId}`;
+    const savedTime = parseFloat(localStorage.getItem(progressKey));
+    if (!isNaN(savedTime)) {
+      player.currentTime = savedTime;
     }
-  }, 10000);
+  }
+});
 
-  // Resume time when ready
-  player.on('ready', () => {
+player.on('sourcechange', () => {
+  setTimeout(() => {
     setHighestQuality();
     if (currentVideoId) {
       const progressKey = `videoProgress_${currentVideoId}`;
@@ -277,22 +294,10 @@ case 'l':
         player.currentTime = savedTime;
       }
     }
-  });
+  }, 500);
+});
 
-  player.on('sourcechange', () => {
-    setTimeout(() => {
-      setHighestQuality();
-      if (currentVideoId) {
-        const progressKey = `videoProgress_${currentVideoId}`;
-        const savedTime = parseFloat(localStorage.getItem(progressKey));
-        if (!isNaN(savedTime)) {
-          player.currentTime = savedTime;
-        }
-      }
-    }, 500);
-  });
-  
-  // Create help button
+// Create help button
 const helpBtn = document.createElement('button');
 helpBtn.id = 'helpBtn';
 helpBtn.textContent = '?';
