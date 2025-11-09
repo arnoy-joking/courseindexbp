@@ -1,436 +1,519 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Existing scripts for video and XLSX handling -->
-  <script type="text/javascript">
-    var gk_isXlsx = false;
-    var gk_xlsxFileLookup = {};
-    var gk_fileData = {};
-    function filledCell(cell) {
-      return cell !== '' && cell != null;
-    }
-    function loadFileData(filename) {
-      if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-        try {
-          var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-          var firstSheetName = workbook.SheetNames[0];
-          var worksheet = workbook.Sheets[firstSheetName];
-          var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-          var filteredData = jsonData.filter(row => row.some(filledCell));
-          var headerRowIndex = filteredData.findIndex((row, index) =>
-            row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-          );
-          if (headerRowIndex === -1 || headerRowIndex > 25) headerRowIndex = 0;
-          var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex));
-          csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-          return csv;
-        } catch (e) {
-          console.error(e);
-          return "";
-        }
-      }
-      return gk_fileData[filename] || "";
-    }
-  </script>
-
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>পড় মন দিয়া</title>
+  <title>পড় মন দিয়া - Bondi Pathshala</title>
   <link rel="icon" href="https://cdn-icons-png.freepik.com/512/7856/7856382.png" type="image/png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <link href="https://cdn.plyr.io/3.7.8/plyr.css" rel="stylesheet">
-   <link rel="stylesheet" href="styles.css" />
-  </head>
-<body class="font-sans">
-  <header class="bg-black text-white p-4 flex items-center">
-    <img src="https://bondipathshala.com.bd/files/logo.png" alt="Bondi Pathshala Logo" class="h-10">
-    <h1 class="ml-4 text-xl font-bold">পড়ালেখা করা ভালো</h1>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="p-4 flex items-center justify-between">
+    <div class="flex items-center">
+      <img src="https://bondipathshala.com.bd/files/logo.png" alt="Bondi Pathshala Logo" class="h-10 w-auto">
+      <h1 class="ml-4 text-xl font-bold text-white">পড় মন দিয়া</h1>
+    </div>
+    <div class="text-sm text-gray-300 hidden md:block">
+      শিক্ষা হলো জীবনের সবচেয়ে বড় সম্পদ
+    </div>
   </header>
 
-  <div class="container mx-auto p-4 flex flex-col lg:flex-row gap-4">
-    <div class="lg:w-3/4 bg-white rounded-lg shadow-md p-4">
-      <h2 class="text-lg font-semibold mb-4 text-gray-100">Live Class</h2>
-      <div style="position: relative;"> <!-- Wrapper for player and custom share button -->
-        <div id="player" data-plyr-provider="youtube" data-plyr-embed-id="RUQcm3vIbWo"></div>
-        <button id="customShareBtn" title="Share" style="position: absolute; top: 15px; right: 15px; z-index: 20; background: none; border: none; cursor: pointer; padding: 0;">
-          <i class="fas fa-share-alt" style="color: white; font-size: 20px; filter: drop-shadow(0 1px 1px rgba(0,0,0,0.5));"></i>
-        </button>
+  <div class="main-container">
+    <section class="video-section">
+      <div class="card">
+        <h2 class="section-title">
+          <i class="fas fa-play-circle"></i>Live Class
+        </h2>
+        <div class="video-container">
+          <div class="video-wrapper">
+            <div id="player"></div>
+          </div>
+          <button id="customShareBtn" class="share-btn" title="Share Video">
+            <i class="fas fa-share-alt text-white"></i>
+          </button>
+        </div>
+        <div class="video-actions">
+          <a id="downloadPdfBtn" href="https://www.bondipathshala.com.bd/pdf/20240527-1716748184-LRH05IsN.pdf" target="_blank" class="action-btn pdf-btn">
+            <i class="fas fa-file-pdf mr-2"></i>Download PDF
+          </a>
+          <button id="downloadEmojiBtn" class="action-btn youtube-btn">
+            <i class="fab fa-youtube mr-2"></i>Open on YouTube
+          </button>
+        </div>
       </div>
-      <div class="flex space-x-4 mt-4">
-        <a id="downloadPdfBtn" href="https://www.bondipathshala.com.bd/pdf/20240527-1716748184-LRH05IsN.pdf" target="_blank" class="inline-block bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
-          <i class="fas fa-file-pdf mr-2"></i>Download PDF
-        </a>
-        <button id="downloadEmojiBtn" class="download-emoji">
-          <i class="fas fa-smile mr-2"></i>Open on YouTube
-        </button>
+    </section>
+
+    <section class="class-section">
+      <div class="card">
+        <h2 class="section-title">
+          <i class="fas fa-list-ol"></i>Class List
+        </h2>
+        <div class="class-list-container">
+          <ul id="classList">
+  <li class="class-item" data-vid="RUQcm3vIbWo" data-nname="Course Roadmap" data-npdf="20240527-1716748184-LRH05IsN.pdf">
+    <span class="class-title bengali-text">Course Roadmap</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="CLrwwQj697Q" data-nname="Basic Building Class(BBC)-01" data-npdf="20240529-1716937235-9lpGk0ak.pdf">
+    <span class="class-title bengali-text">Basic Building Class(BBC)-01</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="P-dkM5_I1VU" data-nname="Basic Building Class(BBC)-02" data-npdf="20240601-1717261772-VB8HeJSt.pdf">
+    <span class="class-title bengali-text">Basic Building Class(BBC)-02</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="pxsGAGomnoI" data-nname="Basic Building Class(BBC)-03" data-npdf="20240603-1717361228-TPilcyPf.pdf">
+    <span class="class-title bengali-text">Basic Building Class(BBC)-03</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="p3wBA8no6c4" data-nname="Basic Building Class(BBC)-04" data-npdf="20240605-1717589649-Qsqg5u7r.pdf">
+    <span class="class-title bengali-text">Basic Building Class(BBC)-04</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="JJuvBfrGUVo" data-nname="Basic Building Class(BBC)-05" data-npdf="20240607-1717710084-HL1UVZIy.pdf">
+    <span class="class-title bengali-text">Basic Building Class(BBC)-05</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="WlrST4v-kaI" data-nname="Basic Building Class(BBC)-06" data-npdf="20240612-1718138903-CosRm2Hp.pdf">
+    <span class="class-title bengali-text">Basic Building Class(BBC)-06</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="cUM3EbhlMmU" data-nname="Basic Building Class(BBC)-07" data-npdf="20240614-1718313883-TerlymZ6.pdf">
+    <span class="class-title bengali-text">Basic Building Class(BBC)-07</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+
+  <li class="class-item" data-vid="_KsZlI7wwBo" data-nname="গুণগত রসায়ন পর্ব-০১" data-npdf="20240701-1719779817-aIxobbwK.pdf">
+    <span class="class-title bengali-text">গুণগত রসায়ন পর্ব-০১</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="u9-QXqsswyk" data-nname="গুণগত রসায়ন পর্ব-০২" data-npdf="20240703-1719944077-MSjIfz7g.pdf">
+    <span class="class-title bengali-text">গুণগত রসায়ন পর্ব-০২</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="IGa_6J-VB3o" data-nname="গুণগত রসায়ন পর্ব-০৩" data-npdf="20240705-1720129590-Kws5CXLp.pdf">
+    <span class="class-title bengali-text">গুণগত রসায়ন পর্ব-০৩</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="cOIPzY3ddJU" data-nname="গুনগত রসায়ন পর্ব-০৪" data-npdf="20240708-1720385932-6hGrw8gr.pdf">
+    <span class="class-title bengali-text">গুনগত রসায়ন পর্ব-০৪</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="hWVHKkx2FJs" data-nname="গুণগত রসায়ন পর্ব-০৫" data-npdf="20240710-1720616665-v7M9BxDL.pdf">
+    <span class="class-title bengali-text">গুণগত রসায়ন পর্ব-০৫</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="4aVBQzg5L80" data-nname="গুণগত রসায়ন পর্ব-০৬" data-npdf="20240715-1720997756-tIbXPU3s.pdf">
+    <span class="class-title bengali-text">গুণগত রসায়ন পর্ব-০৬</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="GE4dDmImPSA" data-nname="গুণগত রসায়ন পর্ব-০৭" data-npdf="20240820-1724176154-tJTn6aKB.pdf">
+    <span class="class-title bengali-text">গুণগত রসায়ন পর্ব-০৭</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="IaKl2mIISw8" data-nname="গুণগত রসায়ন পর্ব-০৮" data-npdf="20240828-1724790082-jt5KjqbB.pdf">
+    <span class="class-title bengali-text">গুণগত রসায়ন পর্ব-০৮</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="JMeG_IB_Yvs" data-nname="গুণগত রসায়ন পর্ব-০৯" data-npdf="20240830-1724967108-BAaCtxU5.pdf">
+    <span class="class-title bengali-text">গুণগত রসায়ন পর্ব-০৯</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="ZnHMZAGrIj8" data-nname="গুণগত রসায়ন পর্ব-১০" data-npdf="20240902-1725216596-9uStRcWl.pdf">
+    <span class="class-title bengali-text">গুণগত রসায়ন পর্ব-১০</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="I6NTnTUikYY" data-nname="গুণগত রসায়ন পর্ব-১১" data-npdf="20240906-1725641873-2lKgq53l.pdf">
+    <span class="class-title bengali-text">গুণগত রসায়ন পর্ব-১১</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="um2noyXpjug" data-nname="গুণগত রসায়ন পর্ব-১২" data-npdf="20240909-1725825601-zdAXsmg9.pdf">
+    <span class="class-title bengali-text">গুণগত রসায়ন পর্ব-১২</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="EIDocDa-xg4" data-nname="গুণগত রসায়ন পর্ব-১৩" data-npdf="20240910-1725987615-f7GytNbZ.pdf">
+    <span class="class-title bengali-text">গুণগত রসায়ন পর্ব-১৩</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="GFhfs-J2_3o" data-nname="গুণগত রসায়ন পর্ব-১৪" data-npdf="20240913-1726205413-mWblYhsS.pdf">
+    <span class="class-title bengali-text">গুণগত রসায়ন পর্ব-১৪</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+
+  <li class="class-item" data-vid="X7-HUoe_ud4" data-nname="দ্রাব্যতা - পর্ব ০১" data-npdf="20240916-1726424417-x6ou2UWz.pdf">
+    <span class="class-title bengali-text">দ্রাব্যতা - পর্ব ০১</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="aS2__Xjjc0M" data-nname="দ্রাব্যতা - পর্ব ০২" data-npdf="20240918-1726604182-9kBeOFvT.pdf">
+    <span class="class-title bengali-text">দ্রাব্যতা - পর্ব ০২</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="HgbSl2W9thE" data-nname="দ্রাব্যতা - পর্ব ০৩" data-npdf="20240921-1726898750-7dLilSCH.pdf">
+    <span class="class-title bengali-text">দ্রাব্যতা - পর্ব ০৩</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="Zoyiw5YHdGk" data-nname="দ্রাব্যতা - পর্ব ০৪" data-npdf="20240923-1727076002-eRaPNEQd.pdf">
+    <span class="class-title bengali-text">দ্রাব্যতা - পর্ব ০৪</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="2321lmDBC58" data-nname="দ্রাব্যতা - পর্ব ০৫" data-npdf="20240924-1727197468-GFHHGErh.pdf">
+    <span class="class-title bengali-text">দ্রাব্যতা - পর্ব ০৫</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="6P0rdcXowy0" data-nname="দ্রাব্যতা - পর্ব ০৬" data-npdf="20240927-1727378157-FT7ahqe0.pdf">
+    <span class="class-title bengali-text">দ্রাব্যতা - পর্ব ০৬</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="YiKI6mSZ6yg" data-nname="দ্রাব্যতা - পর্ব ০৭" data-npdf="20241002-1727807137-yGxhBnvQ.pdf">
+    <span class="class-title bengali-text">দ্রাব্যতা - পর্ব ০৭</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="SZ7kzxWPWJo" data-nname="দ্রাব্যতা । অধ:ক্ষেপ সংক্রান্ত ম্যাথ" data-npdf="20241003-1727899897-fQQCcxBB.pdf">
+    <span class="class-title bengali-text">দ্রাব্যতা । অধ:ক্ষেপ সংক্রান্ত ম্যাথ</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="xXMNJKEzNZU" data-nname="দ্রাব্যতার উপর PH এর প্রভাব" data-npdf="20241006-1728209625-DiFK076F.pdf">
+    <span class="class-title bengali-text">দ্রাব্যতার উপর PH এর প্রভাব</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+
+  <li class="class-item" data-vid="FJes1R9aark" data-nname="আয়ন শনাক্তকরণ" data-npdf="20241002-1727818674-AAhnAILi.pdf">
+    <span class="class-title bengali-text">আয়ন শনাক্তকরণ</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="pApzf0miQDQ" data-nname="শিখা পরীক্ষা ও তেজষ্ক্রিয়তা" data-npdf="20241017-1729168173-TvKefz6t.pdf">
+    <span class="class-title bengali-text">শিখা পরীক্ষা ও তেজষ্ক্রিয়তা</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+
+  <li class="class-item" data-vid="ZvwXwq_JALs" data-nname="মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব ০১" data-npdf="20241019-1729338739-wZDChI9o.pdf">
+    <span class="class-title bengali-text">মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব ০১</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="oOQbjtrr25E" data-nname="মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব ০২" data-npdf="20241021-1729448026-DzYyBwik.pdf">
+    <span class="class-title bengali-text">মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব ০২</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="ngDqOXN0R4s" data-nname="মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব ০৩" data-npdf="20241025-1729803130-20uc1n5X.pdf">
+    <span class="class-title bengali-text">মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব ০৩</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="8nr8Zb-CHg0" data-nname="মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব ৪.1" data-npdf="20241028-1730055866-HOhrfiFb.pdf">
+    <span class="class-title bengali-text">মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব ৪.1</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="f8nwirkZ58Q" data-nname="মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব ৪.2" data-npdf="20241028-1730055866-HOhrfiFb.pdf">
+    <span class="class-title bengali-text">মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব ৪.2</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="wzl4yRT4s7k" data-nname="মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব ০五" data-npdf="20241104-1730659936-nC1vGD15.pdf">
+    <span class="class-title bengali-text">মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব ০五</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="kR-tyH4bEHY" data-nname="মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব ৬.1" data-npdf="20241110-1731196619-mwTxJJZ6.pdf">
+    <span class="class-title bengali-text">মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব ৬.1</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="a29pwQu2Tts" data-nname="মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব ৬.2" data-npdf="20241113-1731440552-L8ktpKzN.pdf">
+    <span class="class-title bengali-text">মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব ৬.2</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="idVoYLbY1s0" data-nname="মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব ০七" data-npdf="20241117-1731861931-RHDYv0La.pdf">
+    <span class="class-title bengali-text">মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব ০七</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="YPAofIfRHgk" data-nname="মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব ৮.1" data-npdf="20241122-1732291608-PBx550nd.pdf">
+    <span class="class-title bengali-text">মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব ৮.1</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="hGjJGRY2IqY" data-nname="মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব ৮.2" data-npdf="20241125-1732486847-0Y1YMcPe.pdf">
+    <span class="class-title bengali-text">মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব ৮.2</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="qINYlblz_Vo" data-nname="মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব ০九" data-npdf="20241206-1733439837-akimHc9X.pdf">
+    <span class="class-title bengali-text">মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব ০九</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="MU1oVV0iJcE" data-nname="মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব 10" data-npdf="20241209-1733696432-CGd5SsRc.pdf">
+    <span class="class-title bengali-text">মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব 10</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+
+  <li class="class-item" data-vid="pMKC7sehw80" data-nname="মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব 11" data-npdf="20241216-1734365525-HERacn00.pdf">
+    <span class="class-title bengali-text">মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব 11</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="wJb-sIvlPCk" data-nname="মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব 12" data-npdf="20241216-1734365548-eyO3V3FM.pdf">
+    <span class="class-title bengali-text">মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব 12</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="snPvzhU09A0" data-nname="মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব 13" data-npdf="20241216-1734365563-bP2699jc.pdf">
+    <span class="class-title bengali-text">মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব 13</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="8fDDh9j4m4M" data-nname="মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব 14" data-npdf="20241216-1734365576-NyxsZxmh.pdf">
+    <span class="class-title bengali-text">মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব 14</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="l_iyYq02Kic" data-nname="মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব 15" data-npdf="20241213-1734033285-ADXww1KD.pdf">
+    <span class="class-title bengali-text">মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব 15</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="o6oaC_dQngo" data-nname="মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব 16" data-npdf="20241218-1734460745-dmzECrGg.pdf">
+    <span class="class-title bengali-text">মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব 16</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="fh5TXEi-8S0" data-nname="মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব 17" data-npdf="20241220-1734636976-QPg2nd6f.pdf">
+    <span class="class-title bengali-text">মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব 17</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="2gnkfdDbp5g" data-nname="মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব 18" data-npdf="20241223-1734904070-wRzQDurU.pdf">
+    <span class="class-title bengali-text">মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব 18</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="_J1gSdRTlN0" data-nname="মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব 19" data-npdf="20241225-1735069463-GfPogKfb.pdf">
+    <span class="class-title bengali-text">মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব 19</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="jHqOfPppeVk" data-nname="মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব 20" data-npdf="20241227-1735242143-ySnmZZbO.pdf">
+    <span class="class-title bengali-text">মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব 20</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+
+  <li class="class-item" data-vid="sZDSIVMkbGk" data-nname="মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব 21" data-npdf="20241230-1735512808-CCOvmkp5.pdf">
+    <span class="class-title bengali-text">মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব 21</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="YQpuFq84-L0" data-nname="মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব 22" data-npdf="20250101-1735673303-7rSG4G9M.pdf">
+    <span class="class-title bengali-text">মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব 22</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="DSSnGCOcRgs" data-nname="মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব 23" data-npdf="20250103-1735844101-Oaow3UpN.pdf">
+    <span class="class-title bengali-text">মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব 23</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="2yZ5TnQz7Rc" data-nname="মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব 24" data-npdf="20250106-1736112495-ssUUot8l.pdf">
+    <span class="class-title bengali-text">মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব 24</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+
+  <li class="class-item" data-vid="tbDXYvjogdk" data-nname="মৌলের পর্যায়বৃত্ত ধর্ম - MCQ সলভ (2017-23)" data-npdf="20250106-1736142499-FUuw0Dju.pdf">
+    <span class="class-title bengali-text">মৌলের পর্যায়বৃত্ত ধর্ম - MCQ সলভ (2017-23)</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="7MNsw-0cdrI" data-nname="মৌলের পর্যায়বৃত্ত ধর্ম - CQ সলভ (2017-23)" data-npdf="20250106-1736142963-Flwn3K5E.pdf">
+    <span class="class-title bengali-text">মৌলের পর্যায়বৃত্ত ধর্ম - CQ সলভ (2017-23)</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="jwC-qUU_YXA" data-nname="Special Class - Lewis Dot Structure" data-npdf="20250112-1736674297-EuZcxDQn.pdf">
+    <span class="class-title bengali-text">Special Class - Lewis Dot Structure</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="Nj-iy8gVgpg" data-nname="মৌলের পর্যায়বৃত্ত ধর্ম - শেষ পর্ব" data-npdf="arnoy-joking.github.io/talsidfsl/pdf">
+    <span class="class-title bengali-text">মৌলের পর্যায়বৃত্ত ধর্ম - শেষ পর্ব</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+
+  <li class="class-item" data-vid="BiqBDNb9NQQ" data-nname="রাসায়নিক পরিবর্তন - পর্ব ০১" data-npdf="20250126-1737830923-zvTGCirl.pdf">
+    <span class="class-title bengali-text">রাসায়নিক পরিবর্তন - পর্ব ০১</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="nk5c5ClU6X0" data-nname="রাসায়নিক পরিবর্তন - পর্ব ০২" data-npdf="20250127-1737918975-0wrT62wY.pdf">
+    <span class="class-title bengali-text">রাসায়নিক পরিবর্তন - পর্ব ০২</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="XzLM7iIOoos" data-nname="Special Live Session - Lecture 01" data-npdf="20250202-1738434734-hCzAvXWq.pdf">
+    <span class="class-title bengali-text">Special Live Session - Lecture 01</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+
+  <li class="class-item" data-vid="VVCPuuzyda4" data-nname="রাসায়নিক পরিবর্তন - পর্ব ০৩" data-npdf="20250204-1738620741-jw3hji7a.pdf">
+    <span class="class-title bengali-text">রাসায়নিক পরিবর্তন - পর্ব ০৩</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="p3s3x_E-QjQ" data-nname="রাসায়নিক পরিবর্তন - পর্ব ০৪" data-npdf="20250204-1738691757-HXD1GYzh.pdf">
+    <span class="class-title bengali-text">রাসায়নিক পরিবর্তন - পর্ব ০৪</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="r8yTMCCmnn4" data-nname="রাসায়নিক পরিবর্তন - পর্ব ০৫" data-npdf="20250206-1738779901-8VpNQA7c.pdf">
+    <span class="class-title bengali-text">রাসায়নিক পরিবর্তন - পর্ব ০৫</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="lYDoS17pygQ" data-nname="রাসায়নিক পরিবর্তন - পর্ব ০৬" data-npdf="20250210-1739132326-J1VpSC24.pdf">
+    <span class="class-title bengali-text">রাসায়নিক পরিবর্তন - পর্ব ০৬</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="CNQ6X2KFLfk" data-nname="রাসায়নিক পরিবর্তন - পর্ব ০৭" data-npdf="20250213-1739467283-iKhht0Qc.pdf">
+    <span class="class-title bengali-text">রাসায়নিক পরিবর্তন - পর্ব ০৭</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="cxcfKjgFBas" data-nname="রাসায়নিক পরিবর্তন - পর্ব ০৮" data-npdf="20250214-1739472276-cs2jSOPs.pdf">
+    <span class="class-title bengali-text">রাসায়নিক পরিবর্তন - পর্ব ০৮</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="qgRG7dAatl4" data-nname="রাসায়নিক পরিবর্তন - পর্ব ০৯" data-npdf="20250217-1739737025-DwtbCGre.pdf">
+    <span class="class-title bengali-text">রাসায়নিক পরিবর্তন - পর্ব ০৯</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="q9Rwc6_3nnc" data-nname="রাসায়নিক পরিবর্তন - পর্ব ১০" data-npdf="20250219-1739906500-hU6MfCaT.pdf">
+    <span class="class-title bengali-text">রাসায়নিক পরিবর্তন - পর্ব ১০</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+
+  <li class="class-item" data-vid="yAfpteRfUT8" data-nname="রাসায়নিক পরিবর্তন - পর্ব ১১.1" data-npdf="20250221-1740086447-JXKGLM1U.pdf">
+    <span class="class-title bengali-text">রাসায়নিক পরিবর্তন - পর্ব ১১.1</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="7kz4crQ8TrA" data-nname="রাসায়নিক পরিবর্তন - পর্ব ১১.2" data-npdf="20250221-1740086526-pBZYoUUT.pdf">
+    <span class="class-title bengali-text">রাসায়নিক পরিবর্তন - পর্ব ১১.2</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="tV_OThoh8lA" data-nname="রাসায়নিক পরিবর্তন - পর্ব ১১.3" data-npdf="20250221-1740138511-u9Fbr0ax.pdf">
+    <span class="class-title bengali-text">রাসায়নিক পরিবর্তন - পর্ব ১১.3</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+
+  <li class="class-item" data-vid="cFUnBtBmQtM" data-nname="Kp &amp; Kc- CQ &amp; MCQ" data-npdf="20240502-1714599034-qQA4HOND.pdf">
+    <span class="class-title bengali-text">Kp &amp; Kc- CQ &amp; MCQ</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="BqM1FeVjk2A" data-nname="রাসায়নিক পরিবর্তন - পর্ব ১২" data-npdf="20250225-1740505568-LwGAxC92.pdf">
+    <span class="class-title bengali-text">রাসায়নিক পরিবর্তন - পর্ব ১২</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="8Xqe_RBbJdA" data-nname="রাসায়নিক পরিবর্তন - পর্ব ১৩" data-npdf="20250303-1740940956-x10233zp.pdf">
+    <span class="class-title bengali-text">রাসায়নিক পরিবর্তন - পর্ব ১৩</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+
+  <li class="class-item" data-vid="tN4fo6KSihA" data-nname="রাসায়নিক পরিবর্তন - পর্ব ১৪" data-npdf="20250306-1741200331-mrcQczBd.pdf">
+    <span class="class-title bengali-text">রাসায়নিক পরিবর্তন - পর্ব ১৪</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="A2K6GmF7c_A" data-nname="রাসায়নিক পরিবর্তন - পর্ব ১৫" data-npdf="20250311-1741632569-vhhLT0og.pdf">
+    <span class="class-title bengali-text">রাসায়নিক পরিবর্তন - পর্ব ১৫</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="0bV_E4rMIjM" data-nname="রাসায়নিক পরিবর্তন - পর্ব ১৬" data-npdf="20250312-1741781551-NUKEOeYT.pdf">
+    <span class="class-title bengali-text">রাসায়নিক পরিবর্তন - পর্ব ১৬</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="85TdWPDUVAQ" data-nname="রাসায়নিক পরিবর্তন - পর্ব ১৭" data-npdf="20250320-1742471871-snoNPRML.pdf">
+    <span class="class-title bengali-text">রাসায়নিক পরিবর্তন - পর্ব ১৭</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="CKzRDWmNsEg" data-nname="রাসায়নিক পরিবর্তন - পর্ব ১৮" data-npdf="20250324-1742753281-zbk7fE86.pdf">
+    <span class="class-title bengali-text">রাসায়নিক পরিবর্তন - পর্ব ১৮</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+
+  <li class="class-item" data-vid="vBdejz9IU0U" data-nname="রাসায়নিক পরিবর্তন - পর্ব ১৯" data-npdf="20250408-1744131124-JdzHgCH5.pdf">
+    <span class="class-title bengali-text">রাসায়নিক পরিবর্তন - পর্ব ১৯</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="_ldOpfMFLPU" data-nname="রাসায়নিক পরিবর্তন - পর্ব ২০" data-npdf="20250408-1744133818-9CwUXbfO.pdf">
+    <span class="class-title bengali-text">রাসায়নিক পরিবর্তন - পর্ব ২০</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+
+  <li class="class-item" data-vid="T0FQ2qnuj5U" data-nname="কর্মমুখী রসায়ন - পর্ব ০১" data-npdf="20250416-1744745067-fb4IFhH3.pdf">
+    <span class="class-title bengali-text">কর্মমুখী রসায়ন - পর্ব ০১</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="jTRQAtEtgEw" data-nname="কর্মমুখী রসায়ন - পর্ব ০২" data-npdf="20250418-1744921535-456C4SRE.pdf">
+    <span class="class-title bengali-text">কর্মমুখী রসায়ন - পর্ব ০২</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="GCWIuXp0GKE" data-nname="কর্মমুখী রসায়ন - পর্ব ০৩" data-npdf="20250423-1745347364-ZoyLtgxu.pdf">
+    <span class="class-title bengali-text">কর্মমুখী রসায়ন - পর্ব ০৩</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="YPfG16y_lIU" data-nname="কর্মমুখী রসায়ন - পর্ব ০৪" data-npdf="20250428-1745785434-FlzTojOb.pdf">
+    <span class="class-title bengali-text">কর্মমুখী রসায়ন - পর্ব ০৪</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="Ryuvcw8T4X4" data-nname="কর্মমুখী রসায়ন - পর্ব ০৫" data-npdf="20250430-1745958813-UfNukZak.pdf">
+    <span class="class-title bengali-text">কর্মমুখী রসায়ন - পর্ব ০৫</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="I7m1jydkH-0" data-nname="কর্মমুখী রসায়ন শেষ পর্ব" data-npdf="20250507-1746564219-G2wVGAgv.pdf">
+    <span class="class-title bengali-text">কর্মমুখী রসায়ন শেষ পর্ব</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+
+  <li class="class-item" data-vid="1tUMBuy6eEc" data-nname="ল্যাবরেটরির নিরাপদ ব্যবহার - পর্ব ০১" data-npdf="20250512-1747023853-CUF8rjS4.pdf">
+    <span class="class-title bengali-text">ল্যাবরেটরির নিরাপদ ব্যবহার - পর্ব ০১</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="nZUpVcDxRrE" data-nname="ল্যাবরেটরির নিরাপদ ব্যবহার - পর্ব ০২" data-npdf="20250514-1747164793-x2x8pLkO.pdf">
+    <span class="class-title bengali-text">ল্যাবরেটরির নিরাপদ ব্যবহার - পর্ব ০২</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="AKXPS4sYb_o" data-nname="ল্যাবরেটরির নিরাপদ ব্যবহার - পর্ব ০৩" data-npdf="20250516-1747341156-XTR7ztqY.pdf">
+    <span class="class-title bengali-text">ল্যাবরেটরির নিরাপদ ব্যবহার - পর্ব ০৩</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+
+  <li class="class-item" data-vid="bB1Ug3GyjHw" data-nname="তাপ রসায়ন" data-npdf="20250606-1749192507-P5Lzng4i.pdf">
+    <span class="class-title bengali-text">তাপ রসায়ন</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="tBlaVoObAn8" data-nname="বিক্রিয়ার হার ও ক্রম" >
+    <span class="class-title bengali-text">বিক্রিয়ার হার ও ক্রম</span>
+  </li>
+          </ul>
+        </div>
       </div>
-    </div>
-
-    <div class="lg:w-1/4 bg-white rounded-lg shadow-md p-4">
-      <button id="openAddVideoBtn" class="w-full bg-black text-white p-2 rounded mb-4 fake-button">
-        <i class="fas fa-plus mr-2"></i>Add New Class
-      </button>
-
-      <h2 class="text-lg font-semibold mb-4 text-gray-100">Class List</h2>
-      <ul id="classList" class="space-y-2 max-h-96 overflow-y-auto">
-         <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer bg-blue-200" data-vid="RUQcm3vIbWo" data-nname="Course Roadmap" data-npdf="20240527-1716748184-LRH05IsN.pdf">
-                    Course Roadmap <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="CLrwwQj697Q" data-nname="Basic Building Class(BBC)-01" data-npdf="20240529-1716937235-9lpGk0ak.pdf">
-                    Basic Building Class(BBC)-01 <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="P-dkM5_I1VU" data-nname="Basic Building Class(BBC)-02" data-npdf="20240601-1717261772-VB8HeJSt.pdf">
-                    Basic Building Class(BBC)-02 <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="pxsGAGomnoI" data-nname="Basic Building Class(BBC)-03" data-npdf="20240603-1717361228-TPilcyPf.pdf">
-                    Basic Building Class(BBC)-03 <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="p3wBA8no6c4" data-nname="Basic Building Class(BBC)-04" data-npdf="20240605-1717589649-Qsqg5u7r.pdf">
-                    Basic Building Class(BBC)-04 <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="JJuvBfrGUVo" data-nname="Basic Building Class(BBC)-05" data-npdf="20240607-1717710084-HL1UVZIy.pdf">
-                    Basic Building Class(BBC)-05 <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="WlrST4v-kaI" data-nname="Basic Building Class(BBC)-06" data-npdf="20240612-1718138903-CosRm2Hp.pdf">
-                    Basic Building Class(BBC)-06 <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="cUM3EbhlMmU" data-nname="Basic Building Class(BBC)-07" data-npdf="20240614-1718313883-TerlymZ6.pdf">
-                    Basic Building Class(BBC)-07 <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="_KsZlI7wwBo" data-nname="গুণগত রসায়ন পর্ব-০১" data-npdf="20240701-1719779817-aIxobbwK.pdf">
-                    গুণগত রসায়ন পর্ব-০১ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="u9-QXqsswyk" data-nname="গুণগত রসায়ন পর্ব-০২" data-npdf="20240703-1719944077-MSjIfz7g.pdf">
-                    গুণগত রসায়ন পর্ব-০২ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="IGa_6J-VB3o" data-nname="গুণগত রসায়ন পর্ব-০৩" data-npdf="20240705-1720129590-Kws5CXLp.pdf">
-                    গুণগত রসায়ন পর্ব-০৩ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="cOIPzY3ddJU" data-nname="গুনগত রসায়ন পর্ব-০৪" data-npdf="20240708-1720385932-6hGrw8gr.pdf">
-                    গুনগত রসায়ন পর্ব-০৪ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="hWVHKkx2FJs" data-nname="গুণগত রসায়ন পর্ব-০৫" data-npdf="20240710-1720616665-v7M9BxDL.pdf">
-                    গুণগত রসায়ন পর্ব-০৫ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="4aVBQzg5L80" data-nname="গুণগত রসায়ন পর্ব-০৬" data-npdf="20240715-1720997756-tIbXPU3s.pdf">
-                    গুণগত রসায়ন পর্ব-০৬ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="GE4dDmImPSA" data-nname="গুণগত রসায়ন পর্ব-০৭" data-npdf="20240820-1724176154-tJTn6aKB.pdf">
-                    গুণগত রসায়ন পর্ব-০৭ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="IaKl2mIISw8" data-nname="গুণগত রসায়ন পর্ব-০৮" data-npdf="20240828-1724790082-jt5KjqbB.pdf">
-                    গুণগত রসায়ন পর্ব-০৮ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="JMeG_IB_Yvs" data-nname="গুণগত রসায়ন পর্ব-০৯" data-npdf="20240830-1724967108-BAaCtxU5.pdf">
-                    গুণগত রসায়ন পর্ব-০৯ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="ZnHMZAGrIj8" data-nname="গুণগত রসায়ন পর্ব-১০" data-npdf="20240902-1725216596-9uStRcWl.pdf">
-                    গুণগত রসায়ন পর্ব-১০ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="I6NTnTUikYY" data-nname="গুণগত রসায়ন পর্ব-১১" data-npdf="20240906-1725641873-2lKgq53l.pdf">
-                    গুণগত রসায়ন পর্ব-১১ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="um2noyXpjug" data-nname="গুণগত রসায়ন পর্ব-১২" data-npdf="20240909-1725825601-zdAXsmg9.pdf">
-                    গুণগত রসায়ন পর্ব-১২ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="EIDocDa-xg4" data-nname="গুণগত রসায়ন পর্ব-১৩" data-npdf="20240910-1725987615-f7GytNbZ.pdf">
-                    গুণগত রসায়ন পর্ব-১৩ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="GFhfs-J2_3o" data-nname="গুণগত রসায়ন পর্ব-১৪" data-npdf="20240913-1726205413-mWblYhsS.pdf">
-                    গুণগত রসায়ন পর্ব-১৪ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="X7-HUoe_ud4" data-nname="দ্রাব্যতা - পর্ব ০১" data-npdf="20240916-1726424417-x6ou2UWz.pdf">
-                    দ্রাব্যতা - পর্ব ০১ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="aS2__Xjjc0M" data-nname="দ্রাব্যতা - পর্ব ০২" data-npdf="20240918-1726604182-9kBeOFvT.pdf">
-                    দ্রাব্যতা - পর্ব ০২ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="HgbSl2W9thE" data-nname="দ্রাব্যতা - পর্ব ০৩" data-npdf="20240921-1726898750-7dLilSCH.pdf">
-                    দ্রাব্যতা - পর্ব ০৩ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="Zoyiw5YHdGk" data-nname="দ্রাব্যতা - পর্ব ০৪" data-npdf="20240923-1727076002-eRaPNEQd.pdf">
-                    দ্রাব্যতা - পর্ব ০৪ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="2321lmDBC58" data-nname="দ্রাব্যতা - পর্ব ০৫" data-npdf="20240924-1727197468-GFHHGErh.pdf">
-                    দ্রাব্যতা - পর্ব ০৫ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="6P0rdcXowy0" data-nname="দ্রাব্যতা - পর্ব ০৬" data-npdf="20240927-1727378157-FT7ahqe0.pdf">
-                    দ্রাব্যতা - পর্ব ০৬ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="YiKI6mSZ6yg" data-nname="দ্রাব্যতা - পর্ব ০৭" data-npdf="20241002-1727807137-yGxhBnvQ.pdf">
-                    দ্রাব্যতা - পর্ব ০৭ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="SZ7kzxWPWJo" data-nname="দ্রাব্যতা । অধ:ক্ষেপ সংক্রান্ত ম্যাথ" data-npdf="20241003-1727899897-fQQCcxBB.pdf">
-                    দ্রাব্যতা । অধ:ক্ষেপ সংক্রান্ত ম্যাথ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="YukQN2Xys9U" data-nname="দ্রাব্যতা | সমআয়ন প্রভাব" data-npdf="20241006-1728204795-JpaEbaMi.pdf">
-                    দ্রাব্যতা | সমআয়ন প্রভাব <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="xXMNJKEzNZU" data-nname="দ্রাব্যতার উপর PH এর প্রভাব" data-npdf="20241006-1728209625-DiFK076F.pdf">
-                    দ্রাব্যতার উপর PH এর প্রভাব <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="FJes1R9aark" data-nname="আয়ন শনাক্তকরণ" data-npdf="20241002-1727818674-AAhnAILi.pdf">
-                    আয়ন শনাক্তকরণ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="pApzf0miQDQ" data-nname="শিখা পরীক্ষা ও তেজষ্ক্রিয়তা" data-npdf="20241017-1729168173-TvKefz6t.pdf">
-                    শিখা পরীক্ষা ও তেজষ্ক্রিয়তা <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="ZvwXwq_JALs" data-nname="মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব ০১" data-npdf="20241019-1729338739-wZDChI9o.pdf">
-                    মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব ০১ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="oOQbjtrr25E" data-nname="মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব ০২" data-npdf="20241021-1729448026-DzYyBwik.pdf">
-                    মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব ০২ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="ngDqOXN0R4s" data-nname="মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব ০৩" data-npdf="20241025-1729803130-20uc1n5X.pdf">
-                    মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব ০৩ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="8nr8Zb-CHg0" data-nname="মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব ৪.1" data-npdf="20241028-1730055866-HOhrfiFb.pdf">
-                    মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব ৪.1 <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="f8nwirkZ58Q" data-nname="মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব ৪.2" data-npdf="20241028-1730055866-HOhrfiFb.pdf">
-                    মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব ৪.2 <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="wzl4yRT4s7k" data-nname="মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব ০五" data-npdf="20241104-1730659936-nC1vGD15.pdf">
-                    মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব ০五 <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="kR-tyH4bEHY" data-nname="মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব ৬.1" data-npdf="20241110-1731196619-mwTxJJZ6.pdf">
-                    মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব ৬.1 <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="a29pwQu2Tts" data-nname="মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব ৬.2" data-npdf="20241113-1731440552-L8ktpKzN.pdf">
-                    মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব ৬.2 <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="idVoYLbY1s0" data-nname="মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব ০七" data-npdf="20241117-1731861931-RHDYv0La.pdf">
-                    মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব ০七 <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="YPAofIfRHgk" data-nname="মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব ৮.1" data-npdf="20241122-1732291608-PBx550nd.pdf">
-                    মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব ৮.1 <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="hGjJGRY2IqY" data-nname="মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব ৮.2" data-npdf="20241125-1732486847-0Y1YMcPe.pdf">
-                    মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব ৮.2 <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="qINYlblz_Vo" data-nname="মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব ০九" data-npdf="20241206-1733439837-akimHc9X.pdf">
-                    মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব ০৯ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="MU1oVV0iJcE" data-nname="মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব 10" data-npdf="20241209-1733696432-CGd5SsRc.pdf">
-                    মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব 10 <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="pMKC7sehw80" data-nname="মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব 11" data-npdf="20241216-1734365525-HERacn00.pdf">
-                    মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব 11 <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="wJb-sIvlPCk" data-nname="মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব 12" data-npdf="20241216-1734365548-eyO3V3FM.pdf">
-                    মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব 12 <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="snPvzhU09A0" data-nname="মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব 13" data-npdf="20241216-1734365563-bP2699jc.pdf">
-                    মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব 13 <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="8fDDh9j4m4M" data-nname="মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব 14" data-npdf="20241216-1734365576-NyxsZxmh.pdf">
-                    মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব 14 <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="l_iyYq02Kic" data-nname="মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব 15" data-npdf="20241213-1734033285-ADXww1KD.pdf">
-                    মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব 15 <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="o6oaC_dQngo" data-nname="মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব 16" data-npdf="20241218-1734460745-dmzECrGg.pdf">
-                    মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব 16 <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="fh5TXEi-8S0" data-nname="মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব 17" data-npdf="20241220-1734636976-QPg2nd6f.pdf">
-                    মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব 17 <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="2gnkfdDbp5g" data-nname="মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব 18" data-npdf="20241223-1734904070-wRzQDurU.pdf">
-                    মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব 18 <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="_J1gSdRTlN0" data-nname="মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব 19" data-npdf="20241225-1735069463-GfPogKfb.pdf">
-                    মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব 19 <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="jHqOfPppeVk" data-nname="মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব 20" data-npdf="20241227-1735242143-ySnmZZbO.pdf">
-                    মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব 20 <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="sZDSIVMkbGk" data-nname="মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব 21" data-npdf="20241230-1735512808-CCOvmkp5.pdf">
-                    মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব 21 <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="YQpuFq84-L0" data-nname="মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব 22" data-npdf="20250101-1735673303-7rSG4G9M.pdf">
-                    মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব 22 <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="DSSnGCOcRgs" data-nname="মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব 23" data-npdf="20250103-1735844101-Oaow3UpN.pdf">
-                    মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব 23 <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="2yZ5TnQz7Rc" data-nname="মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব 24" data-npdf="20250106-1736112495-ssUUot8l.pdf">
-                    মৌলের পর্যায়বৃত্ত ধর্ম - পর্ব 24 <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="tbDXYvjogdk" data-nname="মৌলের পর্যায়বৃত্ত ধর্ম - MCQ সলভ (2017-23)" data-npdf="20250106-1736142499-FUuw0Dju.pdf">
-                    মৌলের পর্যায়বৃত্ত ধর্ম - MCQ সলভ (2017-23) <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="7MNsw-0cdrI" data-nname="মৌলের পর্যায়বৃত্ত ধর্ম - CQ সলভ (2017-23)" data-npdf="20250106-1736142963-Flwn3K5E.pdf">
-                    মৌলের পর্যায়বৃত্ত ধর্ম - CQ সলভ (2017-23) <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="jwC-qUU_YXA" data-nname="Special Class - Lewis Dot Structure" data-npdf="20250112-1736674297-EuZcxDQn.pdf">
-                    Special Class - Lewis Dot Structure <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="Nj-iy8gVgpg" data-nname="মৌলের পর্যায়বৃত্ত ধর্ম - শেষ পর্ব" data-npdf="">
-                    মৌলের পর্যায়বৃত্ত ধর্ম - শেষ পর্ব
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="BiqBDNb9NQQ" data-nname="রাসায়নিক পরিবর্তন - পর্ব ০১" data-npdf="20250126-1737830923-zvTGCirl.pdf">
-                    রাসায়নিক পরিবর্তন - পর্ব ০১ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="nk5c5ClU6X0" data-nname="রাসায়নিক পরিবর্তন - পর্ব ০২" data-npdf="20250127-1737918975-0wrT62wY.pdf">
-                    রাসায়নিক পরিবর্তন - পর্ব ০২ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="XzLM7iIOoos" data-nname="Special Live Session - Lecture 01" data-npdf="20250202-1738434734-hCzAvXWq.pdf">
-                    Special Live Session - Lecture 01 <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="VVCPuuzyda4" data-nname="রাসায়নিক পরিবর্তন - পর্ব ০৩" data-npdf="20250204-1738620741-jw3hji7a.pdf">
-                    রাসায়নিক পরিবর্তন - পর্ব ০৩ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="p3s3x_E-QjQ" data-nname="রাসায়নিক পরিবর্তন - পর্ব ০৪" data-npdf="20250204-1738691757-HXD1GYzh.pdf">
-                    রাসায়নিক পরিবর্তন - পর্ব ০৪ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="r8yTMCCmnn4" data-nname="রাসায়নিক পরিবর্তন - পর্ব ০৫" data-npdf="20250206-1738779901-8VpNQA7c.pdf">
-                    রাসায়নিক পরিবর্তন - পর্ব ০৫ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="lYDoS17pygQ" data-nname="রাসায়নিক পরিবর্তন - পর্ব ০৬" data-npdf="20250210-1739132326-J1VpSC24.pdf">
-                    রাসায়নিক পরিবর্তন - পর্ব ০৬ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="CNQ6X2KFLfk" data-nname="রাসায়নিক পরিবর্তন - পর্ব ০৭" data-npdf="20250213-1739467283-iKhht0Qc.pdf">
-                    রাসায়নিক পরিবর্তন - পর্ব ০৭ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="cxcfKjgFBas" data-nname="রাসায়নিক পরিবর্তন - পর্ব ০৮" data-npdf="20250214-1739472276-cs2jSOPs.pdf">
-                    রাসায়নিক পরিবর্তন - পর্ব ০৮ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="qgRG7dAatl4" data-nname="রাসায়নিক পরিবর্তন - পর্ব ০৯" data-npdf="20250217-1739737025-DwtbCGre.pdf">
-                    রাসayনিক পরিবর্তন - পর্ব ০৯ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="q9Rwc6_3nnc" data-nname="রাসayনিক পরিবর্তন - পর্ব ১০" data-npdf="20250219-1739906500-hU6MfCaT.pdf">
-                    রাসayনিক পরিবর্তন - পর্ব ১০ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="yAfpteRfUT8" data-nname="রাসayনিক পরিবর্তন - পর্ব ১১.1" data-npdf="20250221-1740086447-JXKGLM1U.pdf">
-                    রাসayনিক পরিবর্তন - পর্ব ১১.1 <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="7kz4crQ8TrA" data-nname="রাসayনিক পরিবর্তন - পর্ব ১১.2" data-npdf="20250221-1740086526-pBZYoUUT.pdf">
-                    রাসayনিক পরিবর্তন - পর্ব ১১.2 <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="tV_OThoh8lA" data-nname="রাসায়নিক পরিবর্তন - পর্ব ১১.3" data-npdf="20250221-1740138511-u9Fbr0ax.pdf">
-                    রাসায়নিক পরিবর্তন - পর্ব ১১.3 <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="cFUnBtBmQtM" data-nname="Kp & Kc- CQ & MCQ" data-npdf="20240502-1714599034-qQA4HOND.pdf">
-                    Kp & Kc- CQ & MCQ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="BqM1FeVjk2A" data-nname="রাসায়নিক পরিবর্তন - পর্ব ১২" data-npdf="20250225-1740505568-LwGAxC92.pdf">
-                    রাসায়নিক পরিবর্তন - পর্ব ১২ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="8Xqe_RBbJdA" data-nname="রাসায়নিক পরিবর্তন - পর্ব ১৩" data-npdf="20250303-1740940956-x10233zp.pdf">
-                    রাসায়নিক পরিবর্তন - পর্ব ১৩ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="tN4fo6KSihA" data-nname="রাসায়নিক পরিবর্তন - পর্ব ১৪" data-npdf="20250306-1741200331-mrcQczBd.pdf">
-                    রাসায়নিক পরিবর্তন - পর্ব ১৪ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="A2K6GmF7c_A" data-nname="রাসায়নিক পরিবর্তন - পর্ব ১৫" data-npdf="20250311-1741632569-vhhLT0og.pdf">
-                    রাসায়নিক পরিবর্তন - পর্ব ১৫ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="0bV_E4rMIjM" data-nname="রাসায়নিক পরিবর্তন - পর্ব ১৬" data-npdf="20250312-1741781551-NUKEOeYT.pdf">
-                    রাসayনিক পরিবর্তন - পর্ব ১৬ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="85TdWPDUVAQ" data-nname="রাসayনিক পরিবর্তন - পর্ব ১৭" data-npdf="20250320-1742471871-snoNPRML.pdf">
-                    রাসayনিক পরিবর্তন - পর্ব ১৭ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="CKzRDWmNsEg" data-nname="রাসayনিক পরিবর্তন - পর্ব ১৮" data-npdf="20250324-1742753281-zbk7fE86.pdf">
-                    রাসayনিক পরিবর্তন - পর্ব ১৮ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="vBdejz9IU0U" data-nname="রাসayনিক পরিবর্তন - পর্ব ১৯" data-npdf="20250408-1744131124-JdzHgCH5.pdf">
-                    রাসayনিক পরিবর্তন - পর্ব ১৯ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="_ldOpfMFLPU" data-nname="রাসayনিক পরিবর্তন - পর্ব ২০" data-npdf="20250408-1744133818-9CwUXbfO.pdf">
-                    রাসayনিক পরিবর্তন - পর্ব ২০ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="T0FQ2qnuj5U" data-nname="কর্মমুখী রসায়ন - পর্ব ০১" data-npdf="20250416-1744745067-fb4IFhH3.pdf">
-                    কর্মমুখী রসায়ন - পর্ব ০১ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="jTRQAtEtgEw" data-nname="কর্মমুখী রসায়ন - পর্ব ০২" data-npdf="20250418-1744921535-456C4SRE.pdf">
-                    কর্মমুখী রসায়ন - পর্ব ০২ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="GCWIuXp0GKE" data-nname="কর্মমুখী রসায়ন - পর্ব ০৩" data-npdf="20250423-1745347364-ZoyLtgxu.pdf">
-                    কর্মমুখী রসায়ন - পর্ব ০৩ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="YPfG16y_lIU" data-nname="কর্মমুখী রসায়ন - পর্ব ০৪" data-npdf="20250428-1745785434-FlzTojOb.pdf">
-                    কর্মমুখী রসায়ন - পর্ব ০৪ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>
-                <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="Ryuvcw8T4X4" data-nname="কর্মমুখী রসায়ন - পর্ব ০৫" data-npdf="20250430-1745958813-UfNukZak.pdf">
-                    কর্মমুখী রসায়ন - পর্ব ০৫ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-                </li>  
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="I7m1jydkH-0" data-nname="কর্মমুখী রসায়ন শেষ পর্ব" data-npdf="20250507-1746564219-G2wVGAgv.pdf">
-  কর্মমুখী রসায়ন শেষ পর্ব <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-</li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="1tUMBuy6eEc" data-nname="ল্যাবরেটরির নিরাপদ ব্যবহার - পর্ব ০১" data-npdf="20250512-1747023853-CUF8rjS4.pdf">
-  ল্যাবরেটরির নিরাপদ ব্যবহার - পর্ব ০১ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-</li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="nZUpVcDxRrE" data-nname="ল্যাবরেটরির নিরাপদ ব্যবহার - পর্ব ০২" data-npdf="20250514-1747164793-x2x8pLkO.pdf">
-  ল্যাবরেটরির নিরাপদ ব্যবহার - পর্ব ০২ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-</li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="AKXPS4sYb_o" data-nname="ল্যাবরেটরির নিরাপদ ব্যবহার - পর্ব ০৩" data-npdf="20250516-1747341156-XTR7ztqY.pdf">
-  ল্যাবরেটরির নিরাপদ ব্যবহার - পর্ব ০৩ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-</li>
-<!-- Add these inside the <ul id="classList"> ... </ul> -->
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="bB1Ug3GyjHw" data-nname="তাপ রসায়ন" data-npdf="20250606-1749192507-P5Lzng4i.pdf">
-  তাপ রসায়ন <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-</li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="tBlaVoObAn8" data-nname="বিক্রিয়ার হার ও ক্রম" data-npdf="20250608-1749400261-AUezjJKQ.pdf">
-  বিক্রিয়ার হার ও ক্রম <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-</li>
-      </ul>
-    </div>
+    </section>
   </div>
 
-<footer class="bg-gray-900 text-white py-8 px-4 md:px-8 relative overflow-hidden">
-  <!-- Neon Glow Background Effect -->
-  <div class="absolute inset-0 bg-gradient-to-r from-pink-500/20 via-cyan-500/20 to-lime-500/20 animate-pulse"></div>
-  
-  <div class="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left relative z-10">
-    <!-- Brand/Logo Section -->
-    <div>
-      <h2 class="text-3xl font-extrabold tracking-wider text-lime-400>Bondi Pathshala</h2>
-      <p class="mt-2 text-lime-300 t-medium">Bondi Pathshala</p>
-    </div>
-
-    <!-- Navigation Links -->
-    <div>
-      <h3 class="text-lg font-bold text-lime-400 mb-4 drop-shadow-[0_0_8px_rgba(132,204,22,0.6)]">মন ফ্রেশ থাকলে পড়া বেশি মনে থাকে!</h3>
-      <ul class="space-y-2 text-cyan-300 text-sm">
-  <li>পড়ায় ঝড় তুলো!</li>
-  <li>রঙিন নোট ফাটাও!</li>
-  <li> বই পড়ো!</li>
-      </ul>
-    </div>
-
-    <!-- Social Media & Contact -->
-    <div>
-      <h3 class="text-lg font-bold text-lime-400 mb-4 drop-shadow-[0_0_8px_rgba(132,204,22,0.6)]">Connect With Us</h3>
-      <div class="flex justify-center md:justify-start space-x-4 mb-4">
-        <a href="#" class="hover:scale-110 transform transition-transform duration-300 drop-shadow-[0_0_6px_rgba(236,72,153,0.5)]">
-          <svg class="w-6 h-6 fill-current text-cyan-300 hover:text-pink-400" viewBox="0 0 24 24">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/>
-          </svg>
-        </a>
-        <a href="#" class="hover:scale-110 transform transition-transform duration-300 drop-shadow-[0_0_6px_rgba(236,72,153,0.5)]">
-          <svg class="w-6 h-6 fill-current text-cyan-300 hover:text-pink-400" viewBox="0 0 24 24">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 14v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1h-6v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
-          </svg>
-        </a>
+  <footer>
+    <div class="footer-content">
+      <div class="footer-brand">
+        <h2 class="text-2xl font-bold text-teal-300">Bondi Pathshala</h2>
+        <p class="mt-2 text-teal-200">শিক্ষা জীবনের সবচেয়ে বড় সম্পদ</p>
       </div>
-      <p class="text-cyan-300 text-sm font-medium">Email: <a href="mailto:arnoy799@gmail.com" class="hover:text-pink-400 transition-colors duration-300 hover:drop-shadow-[0_0_6px_rgba(236,72,153,0.5)]">arnoy799@gmail.com</a></p>
+      
+      <div class="footer-links">
+        <h3 class="text-lg font-bold text-teal-300 mb-4">মন ফ্রেশ থাকলে পড়া বেশি মনে থাকে!</h3>
+        <ul class="space-y-2 text-teal-200">
+          <li class="bengali-text">পড়ায় ঝড় তুলো!</li>
+          <li class="bengali-text">বই পড়ো!</li>
+        </ul>
+      </div>
+      
+      <div class="footer-social">
+        <h3 class="text-lg font-bold text-teal-300 mb-4">Connect With Us</h3>
+        <div class="social-icons">
+          <a href="#" class="social-icon">
+            <i class="fab fa-facebook-f text-white"></i>
+          </a>
+          <a href="#" class="social-icon">
+            <i class="fab fa-youtube text-white"></i>
+          </a>
+          <a href="#" class="social-icon">
+            <i class="fab fa-instagram text-white"></i>
+          </a>
+        </div>
+        <p class="text-teal-200">
+          Email: <a href="mailto:arnoy799@gmail.com" class="hover:text-white transition-colors">arnoy799@gmail.com</a>
+        </p>
+      </div>
     </div>
-  </div>
+    
+    <div class="border-t border-teal-800 mt-8 pt-4 text-center text-teal-300 text-sm">
+      <p>© 2025 Bondi Pathshala. All rights reserved.</p>
+    </div>
+  </footer>
 
-  <!-- Bottom Bar -->
-  <div class="border-t border-pink-500/50 mt-8 pt-4 text-center text-cyan-300 text-sm font-medium">
-    <p>© 2025 Bondi Pathshala. All rights reserved.</p>
-  </div>
-</footer>
-<div id="playerToast"
-     style="position: fixed; bottom: 10%; left: 50%; transform: translateX(-50%);
-            background-color: rgba(0, 0, 0, 0.8); color: white;
-            padding: 10px 20px; border-radius: 8px;
-            font-size: 16px; opacity: 0; pointer-events: none;
-            transition: opacity 0.3s ease;">
-<script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
-<script src="script.js"></script>
+  <!-- Status Message Element -->
+  <div id="statusMessage" class="status-message"></div>
+
+  <!-- YouTube IFrame API -->
+  <script src="https://www.youtube.com/iframe_api"></script>
+  <script src="script.js"></script>
 </body>
 </html>

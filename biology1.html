@@ -1,312 +1,387 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Existing scripts for video and XLSX handling -->
-  <script type="text/javascript">
-    var gk_isXlsx = false;
-    var gk_xlsxFileLookup = {};
-    var gk_fileData = {};
-    function filledCell(cell) {
-      return cell !== '' && cell != null;
-    }
-    function loadFileData(filename) {
-      if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-        try {
-          var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-          var firstSheetName = workbook.SheetNames[0];
-          var worksheet = workbook.Sheets[firstSheetName];
-          var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-          var filteredData = jsonData.filter(row => row.some(filledCell));
-          var headerRowIndex = filteredData.findIndex((row, index) =>
-            row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-          );
-          if (headerRowIndex === -1 || headerRowIndex > 25) headerRowIndex = 0;
-          var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex));
-          csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-          return csv;
-        } catch (e) {
-          console.error(e);
-          return "";
-        }
-      }
-      return gk_fileData[filename] || "";
-    }
-  </script>
-
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>পড় মন দিয়া</title>
+  <title>পড় মন দিয়া - Bondi Pathshala</title>
   <link rel="icon" href="https://cdn-icons-png.freepik.com/512/7856/7856382.png" type="image/png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <link href="https://cdn.plyr.io/3.7.8/plyr.css" rel="stylesheet">
-   <link rel="stylesheet" href="styles.css" />
-  </head>
-<body class="font-sans">
-  <header class="bg-black text-white p-4 flex items-center">
-    <img src="https://bondipathshala.com.bd/files/logo.png" alt="Bondi Pathshala Logo" class="h-10">
-    <h1 class="ml-4 text-xl font-bold">পড়ালেখা করা ভালো</h1>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="p-4 flex items-center justify-between">
+    <div class="flex items-center">
+      <img src="https://bondipathshala.com.bd/files/logo.png" alt="Bondi Pathshala Logo" class="h-10 w-auto">
+      <h1 class="ml-4 text-xl font-bold text-white">পড় মন দিয়া</h1>
+    </div>
+    <div class="text-sm text-gray-300 hidden md:block">
+      শিক্ষা হলো জীবনের সবচেয়ে বড় সম্পদ
+    </div>
   </header>
 
-  <div class="container mx-auto p-4 flex flex-col lg:flex-row gap-4">
-    <div class="lg:w-3/4 bg-white rounded-lg shadow-md p-4">
-      <h2 class="text-lg font-semibold mb-4 text-gray-100">Live Class</h2>
-      <div style="position: relative;"> <!-- Wrapper for player and custom share button -->
-        <div id="player" data-plyr-provider="youtube" data-plyr-embed-id="RUQcm3vIbWo"></div>
-        <button id="customShareBtn" title="Share" style="position: absolute; top: 15px; right: 15px; z-index: 20; background: none; border: none; cursor: pointer; padding: 0;">
-          <i class="fas fa-share-alt" style="color: white; font-size: 20px; filter: drop-shadow(0 1px 1px rgba(0,0,0,0.5));"></i>
-        </button>
+  <div class="main-container">
+    <section class="video-section">
+      <div class="card">
+        <h2 class="section-title">
+          <i class="fas fa-play-circle"></i>Live Class
+        </h2>
+        <div class="video-container">
+          <div class="video-wrapper">
+            <div id="player"></div>
+          </div>
+          <button id="customShareBtn" class="share-btn" title="Share Video">
+            <i class="fas fa-share-alt text-white"></i>
+          </button>
+        </div>
+        <div class="video-actions">
+          <a id="downloadPdfBtn" href="https://www.bondipathshala.com.bd/pdf/20240527-1716748184-LRH05IsN.pdf" target="_blank" class="action-btn pdf-btn">
+            <i class="fas fa-file-pdf mr-2"></i>Download PDF
+          </a>
+          <button id="downloadEmojiBtn" class="action-btn youtube-btn">
+            <i class="fab fa-youtube mr-2"></i>Open on YouTube
+          </button>
+        </div>
       </div>
-      <div class="flex space-x-4 mt-4">
-        <a id="downloadPdfBtn" href="https://www.bondipathshala.com.bd/pdf/20240527-1716748184-LRH05IsN.pdf" target="_blank" class="inline-block bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
-          <i class="fas fa-file-pdf mr-2"></i>Download PDF
-        </a>
-        <button id="downloadEmojiBtn" class="download-emoji">
-          <i class="fas fa-smile mr-2"></i>Open on YouTube
-        </button>
+    </section>
+
+    <section class="class-section">
+      <div class="card">
+        <h2 class="section-title">
+          <i class="fas fa-list-ol"></i>Class List
+        </h2>
+        <div class="class-list-container">
+          <ul id="classList">
+         
+  <li class="class-item" data-vid="KaGqg9DhqFE" data-nname="কোষ ও কোষের গঠন পর্ব -০১" data-npdf="20240527-1716747527-YpJ2RGMl.pdf">
+    <span class="class-title bengali-text">কোষ ও কোষের গঠন পর্ব -০১</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="EN-6Teg-ZJM" data-nname="কোষ ও কোষের গঠন পর্ব -০২" data-npdf="20240529-1716919264-WK9TgC7E.pdf">
+    <span class="class-title bengali-text">কোষ ও কোষের গঠন পর্ব -০২</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="tRw6bOrMkwY" data-nname="কোষ ও কোষের গঠন পর্ব -২.২" data-npdf="20240529-1716919264-WK9TgC7E.pdf">
+    <span class="class-title bengali-text">কোষ ও কোষের গঠন পর্ব -২.২</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="n3d04l3AqiE" data-nname="কোষ ও কোষের গঠন পর্ব -০৩" data-npdf="20240531-1717151708-PnLGeH7z.pdf">
+    <span class="class-title bengali-text">কোষ ও কোষের গঠন পর্ব -০৩</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="s8h5dQJbS60" data-nname="কোষ ও কোষের গঠন পর্ব -০৪" data-npdf="20240603-1717361199-EhGZA0c2.pdf">
+    <span class="class-title bengali-text">কোষ ও কোষের গঠন পর্ব -০৪</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="-PFlwWeGcMk" data-nname="কোষ ও কোষের গঠন পর্ব -০৫" data-npdf="20240605-1717589402-21nOUVWK.pdf">
+    <span class="class-title bengali-text">কোষ ও কোষের গঠন পর্ব -০৫</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="_9dxV6E6x5w" data-nname="কোষ ও কোষের গঠন পর্ব -০৬" data-npdf="20240607-1717766552-rRn6UUmR.pdf">
+    <span class="class-title bengali-text">কোষ ও কোষের গঠন পর্ব -০৬</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="VH64cvK6jk4" data-nname="কোষ ও কোষের গঠন পর্ব -০৭" data-npdf="20240610-1718024565-cKvdl9GB.pdf">
+    <span class="class-title bengali-text">কোষ ও কোষের গঠন পর্ব -০৭</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="YmHoUAxsZi4" data-nname="কোষ ও এর গঠন পর্ব ৮" data-npdf="20240612-1718138865-skHiksUO.pdf">
+    <span class="class-title bengali-text">কোষ ও এর গঠন পর্ব ৮</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="lRPPRRxGKzg" data-nname="কোষ ও এর গঠন পর্ব ৯" data-npdf="20240626-1719387029-QgRnVfQ0.pdf">
+    <span class="class-title bengali-text">কোষ ও এর গঠন পর্ব ৯</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="oEQc1LsygKg" data-nname="কোষ ও কোষের গঠনের CQ solving" data-npdf="20240701-1719841089-UuHYXphB.pdf">
+    <span class="class-title bengali-text">কোষ ও কোষের গঠনের CQ solving</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="L55sAexCNm8" data-nname="কোষ ও কোষের গঠন পর্ব -১০" data-npdf="20240705-1720129726-tUGAAdcm.pdf">
+    <span class="class-title bengali-text">কোষ ও কোষের গঠন পর্ব -১০</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+
+  <li class="class-item" data-vid="WTmCyvgg15g" data-nname="কোষ বিভাজন - পর্ব ০১" data-npdf="20240909-1725819373-MedBoVyE.pdf">
+    <span class="class-title bengali-text">কোষ বিভাজন - পর্ব ০১</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="CQliZYqkzuk" data-nname="কোষ বিভাজন- পর্ব ০২" data-npdf="20240911-1726002176-CQrADNIg.pdf">
+    <span class="class-title bengali-text">কোষ বিভাজন- পর্ব ০২</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="oVepAPSwxck" data-nname="কোষ বিভাজন - পর্ব ০৩" data-npdf="20240912-1726163847-4D8AyNcJ.pdf">
+    <span class="class-title bengali-text">কোষ বিভাজন - পর্ব ০৩</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="v9GauhdJ6Ks" data-nname="কোষ বিভাজন - পর্ব ০৪" data-npdf="20240915-1726413323-ceNzTXcN.pdf">
+    <span class="class-title bengali-text">কোষ বিভাজন - পর্ব ০৪</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+
+  <li class="class-item" data-vid="w2V6hYgfYBc" data-nname="অণুজীব - পর্ব ০১" data-npdf="20241018-1729260451-OrG7QkIT.pdf">
+    <span class="class-title bengali-text">অণুজীব - পর্ব ০১</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="-x0lRkmrnO0" data-nname="অনুজীব - পর্ব ০২" data-npdf="20241021-1729532686-GLqHKciW.pdf">
+    <span class="class-title bengali-text">অনুজীব - পর্ব ০২</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="ov6pGd1hQa8" data-nname="অণুজীব - পর্ব ০৩" data-npdf="20241025-1729803181-JxPNl4fO.pdf">
+    <span class="class-title bengali-text">অণুজীব - পর্ব ০৩</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="-t0uivyL-LI" data-nname="অণুজীব - পর্ব ০৪" data-npdf="20241026-1729885570-fMZIP0IQ.pdf">
+    <span class="class-title bengali-text">অণুজীব - পর্ব ০৪</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="yeGBgn8RZBo" data-nname="অনুজীব - পর্ব ৫.১" data-npdf="20241027-1730049639-WO6miGig.pdf">
+    <span class="class-title bengali-text">অনুজীব - পর্ব ৫.১</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="iiuxcPdyo-Q" data-nname="অনুজীব - পর্ব ৫.২" data-npdf="20241027-1730049639-WO6miGig.pdf">
+    <span class="class-title bengali-text">অনুজীব - পর্ব ৫.২</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="7G-hUr-xpn8" data-nname="অণুজীব - পর্ব ০৬">
+    <span class="class-title bengali-text">অণুজীব - পর্ব ০৬</span>
+  </li>
+
+  <li class="class-item" data-vid="tP5eVmOb6do" data-nname="কোষ রসায়ন - পর্ব ০১" data-npdf="20241202-1733086191-eo9ztJEi.pdf">
+    <span class="class-title bengali-text">কোষ রসায়ন - পর্ব ০১</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="cuHcbam2sz8" data-nname="কোষ রসায়ন - পর্ব ২.১" data-npdf="20241204-1733264159-mq2fghnC.pdf">
+    <span class="class-title bengali-text">কোষ রসায়ন - পর্ব ২.১</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="bN894DP0v8Y" data-nname="কোষ রসায়ন - পর্ব ২.২" data-npdf="20241204-1733264159-mq2fghnC.pdf">
+    <span class="class-title bengali-text">কোষ রসায়ন - পর্ব ২.২</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="nN5_2UQ3sXI" data-nname="কোষ রসায়ন - পর্ব ৩.১" data-npdf="20241206-1733439466-aon9ZcLw.pdf">
+    <span class="class-title bengali-text">কোষ রসায়ন - পর্ব ৩.১</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="p5fwpD5ED6w" data-nname="কোষ রসায়ন - পর্ব ৩.২" data-npdf="20241206-1733439466-aon9ZcLw.pdf">
+    <span class="class-title bengali-text">কোষ রসায়ন - পর্ব ৩.২</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="wen-mzc1r-w" data-nname="কোষ রসায়ন - পর্ব ০৪" data-npdf="20241209-1733696285-pcWsh4Y6.pdf">
+    <span class="class-title bengali-text">কোষ রসায়ন - পর্ব ০৪</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="26788gbIqPU" data-nname="কোষ রসায়ন - পর্ব ৫.১" data-npdf="20241211-1733859880-SLLaMIuD.pdf">
+    <span class="class-title bengali-text">কোষ রসায়ন - পর্ব ৫.১</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="GYnfs4KJfUg" data-nname="কোষ রসায়ন - পর্ব ৫.২" data-npdf="20241211-1733859880-SLLaMIuD.pdf">
+    <span class="class-title bengali-text">কোষ রসায়ন - পর্ব ৫.২</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="dauGNaS91L8" data-nname="কোষ রসায়ন - পর্ব ০৬" data-npdf="20241213-1734034617-3Rej0uUn.pdf">
+    <span class="class-title bengali-text">কোষ রসায়ন - পর্ব ০৬</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+
+  <li class="class-item" data-vid="je_HcLK4ygA" data-nname="নগ্নবীজী ও আবৃতবীজী - পর্ব ০১" data-npdf="20250121-1737482232-ZWxDrSXG.pdf">
+    <span class="class-title bengali-text">নগ্নবীজী ও আবৃতবীজী - পর্ব ০১</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="l3BExuFeErI" data-nname="নগ্নবীজী ও আবৃতবীজী - পর্ব ০২" data-npdf="20250123-1737648041-hv4QIukj.pdf">
+    <span class="class-title bengali-text">নগ্নবীজী ও আবৃতবীজী - পর্ব ০২</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="PymKxe2Qo0A" data-nname="নগ্নবীজী ও আবৃতবীজী - পর্ব ০৩" data-npdf="20250127-1737918763-HNNICxs4.pdf">
+    <span class="class-title bengali-text">নগ্নবীজী ও আবৃতবীজী - পর্ব ০৩</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="XDkCF_VgYwk" data-nname="নগ্নবীজী ও আবৃতবীজী - পর্ব ৪.১" data-npdf="20250129-1738089706-dlXBsmeH.pdf">
+    <span class="class-title bengali-text">নগ্নবীজী ও আবৃতবীজী - পর্ব ৪.১</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="pYBFH10fHRI" data-nname="নগ্নবীজী ও আবৃতবীজী - পর্ব ৪.২" data-npdf="20250129-1738089706-dlXBsmeH.pdf">
+    <span class="class-title bengali-text">নগ্নবীজী ও আবৃতবীজী - পর্ব ৪.২</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="2-SUErpLvnw" data-nname="নগ্নবীজী ও আবৃতবীজী  - পর্ব ০৫" data-npdf="20250130-1738173721-cMmSjwTG.pdf">
+    <span class="class-title bengali-text">নগ্নবীজী ও আবৃতবীজী  - পর্ব ০৫</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="f5YyP2eKb-g" data-nname="নগ্নবীজী ও আবৃতবীজী শেষ পর্ব" data-npdf="20250131-1738264487-mnOs2jyR.pdf">
+    <span class="class-title bengali-text">নগ্নবীজী ও আবৃতবীজী শেষ পর্ব</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+
+  <li class="class-item" data-vid="3h456CVz270" data-nname="বোটানি টিস্যু ও টিস্যুতন্ত্র - পর্ব ০১" data-npdf="20250204-1738691900-uciSdu4k.pdf">
+    <span class="class-title bengali-text">বোটানি টিস্যু ও টিস্যুতন্ত্র - পর্ব ০১</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="K39ONghcjfg" data-nname="টিস্যু - পর্ব ০২" data-npdf="20250207-1738865555-MFF2bxCT.pdf">
+    <span class="class-title bengali-text">টিস্যু - পরর্ভ ০২</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="UWWDa5edgWA" data-nname="টিস্যু - পর্ব ০৩" data-npdf="20250210-1739132880-2OVmsui2.pdf">
+    <span class="class-title bengali-text">টিস্যু - পর্ব ০৩</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="aV8vWA_0nko" data-nname="টিস্যু ও টিস্যুতন্ত্রের শেষ অংশ" data-npdf="20250215-1739642333-eysRtIn7.pdf">
+    <span class="class-title bengali-text">টিস্যু ও টিস্যুতন্ত্রের শেষ অংশ</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+
+  <li class="class-item" data-vid="5BeVBBCQX9A" data-nname="শৈবাল ছত্রাক - পর্ব ০১" data-npdf="20250312-1741720411-XPROBpYS.pdf">
+    <span class="class-title bengali-text">শৈবাল ছত্রাক - পর্ব ০১</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="0EZ8oE97OMY" data-nname="শৈবাল ছত্রাক - পর্ব ০২" data-npdf="20250315-1741978823-P759EvtF.pdf">
+    <span class="class-title bengali-text">শৈবাল ছত্রাক - পর্ব ০২</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="1vesKcPd8ZA" data-nname="শৈবাল ও ছত্রাক - পর্ব ০৩" data-npdf="20250317-1742169559-UI5Y1RWI.pdf">
+    <span class="class-title bengali-text">শৈবাল ও ছত্রাক - পর্ব ০৩</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="MKgdwSYiIRA" data-nname="শৈবাল ও ছত্রাক - পর্ব ০৪" data-npdf="20250322-1742586017-Gx5Zh1Fv.pdf">
+    <span class="class-title bengali-text">শৈবাল ও ছত্রাক - পর্ব ০৪</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="zuQeHvlJf-4" data-nname="শৈবাল ছত্রাক - পর্ব ০৫">
+    <span class="class-title bengali-text">শৈবাল ছত্রাক - পর্ব ০৫</span>
+  </li>
+  <li class="class-item" data-vid="Z4UklPc6hqk" data-nname="শৈবাল ছত্রাক - পর্ব ০৬">
+    <span class="class-title bengali-text">শৈবাল ছত্রাক - পর্ব ০৬</span>
+  </li>
+
+  <li class="class-item" data-vid="66sfKI8c9d4" data-nname="ব্রায়োফাইটা ও টেরিডোফাইটা - পর্ব ০১" data-npdf="20250416-1744744668-Wyq92K90.pdf">
+    <span class="class-title bengali-text">ব্রায়োফাইটা ও টেরিডোফাইটা - পর্ব ০১</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="Qk6UMGFvv_c" data-nname="ব্রায়োফাইটা ও টেরিডোফাইটা - পর্ব ০২" data-npdf="20250418-1744922328-CLmvvsbb.pdf">
+    <span class="class-title bengali-text">ব্রায়োফাইটা ও টেরিডোফাইটা - পর্ব ০২</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="JpM1CPE7OUc" data-nname="ব্রায়োফাইটা ও টেরিডোফাইটা - পর্ব ০৩">
+    <span class="class-title bengali-text">ব্রায়োফাইটা ও টেরিডোফাইটা - পর্ব ০৩</span>
+  </li>
+
+  <li class="class-item" data-vid="alOtWfubRNs" data-nname="উদ্ভিদ শারীরতত্ত্ব - পর্ব ০১" data-npdf="20250511-1746949973-ITqvHvj2.pdf">
+    <span class="class-title bengali-text">উদ্ভিদ শারীরতত্ত্ব - পর্ব ০১</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="nS0ftzaYIPc" data-nname="উদ্ভিদ শারীরতত্ত্ব - পর্ব ০২" data-npdf="20250512-1747023610-OojHeCbv.pdf">
+    <span class="class-title bengali-text">উদ্ভিদ শারীরতত্ত্ব - পর্ব ০২</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="74Vrnz3cMfA" data-nname="উদ্ভিদ শারীরতত্ত্ব - পর্ব ০৩" data-npdf="20250518-1747513359-v18QYiKO.pdf">
+    <span class="class-title bengali-text">উদ্ভিদ শারীরতত্ত্ব - পর্ব ০৩</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="ttRtOJU-lAM" data-nname="উদ্ভিদ শারীরতত্ত্ব - পর্ব ০৪" data-npdf="20250519-1747594420-JX8SjE6A.pdf">
+    <span class="class-title bengali-text">উদ্ভিদ শারীরতত্ত্ব - পর্ব ০৪</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="Q1tEY0rOPDQ" data-nname="উদ্ভিদ শারীরতত্ত্ব  - পর্ব ০৫" data-npdf="20250525-1748120604-5tvGYXI7.pdf">
+    <span class="class-title bengali-text">উদ্ভিদ শারীরতত্ত্ব  - পর্ব ০৫</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="SYu3gZVVIkE" data-nname="উদ্ভিদ শারীরতত্ত্ব - পর্ব ০৬" data-npdf="20250526-1748209981-fgP3HArA.pdf">
+    <span class="class-title bengali-text">উদ্ভিদ শারীরতত্ত্ব - পর্ব ০৬</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="UyTbi0x5Si0" data-nname="উদ্ভিদ শারীরতত্ত্ব  - পর্ব ০৭" data-npdf="20250601-1748720625-egj7Wrm1.pdf">
+    <span class="class-title bengali-text">উদ্ভিদ শারীরতত্ত্ব  - পর্ব ০৭</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+
+  <li class="class-item" data-vid="6zFebat34X4" data-nname="উদ্ভিদ প্রজনন - পর্ব ০১" data-npdf="20250629-1751134505-68EQ2qcb.pdf">
+    <span class="class-title bengali-text">উদ্ভিদ প্রজনন - পর্ব ০১</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="KV_ZSTpigGI" data-nname="উদ্ভিদ প্রজনন - পর্ব ০২" data-npdf="20250701-1751322471-b0Q2aWvh.pdf">
+    <span class="class-title bengali-text">উদ্ভিদ প্রজনন - পর্ব ০২</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="pP8DN8KCW3U" data-nname="উদ্ভিদ প্রজনন পর্ব-০৩" data-npdf="20250706-1751820818-OEKNwpJO.pdf">
+    <span class="class-title bengali-text">উদ্ভিদ প্রজনন পর্ব-০৩</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="Whb8CuH9XJY" data-nname="উদ্ভিদ প্রজনন - পর্ব ০৪">
+    <span class="class-title bengali-text">উদ্ভিদ প্রজনন - পর্ব ০৪</span>
+  </li>
+
+  <li class="class-item" data-vid="-0UMl4TIyEU" data-nname="জীবপ্রযুক্তি - পর্ব ০১" data-npdf="20250729-1753734500-h8ZskoAh.pdf">
+    <span class="class-title bengali-text">জীবপ্রযুক্তি - পর্ব ০১</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="UfQhRGnM7fY" data-nname="জীব প্রযুক্তি - পর্ব ০২">
+    <span class="class-title bengali-text">জীব প্রযুক্তি - পর্ব ০২</span>
+  </li>
+  <li class="class-item" data-vid="yVQfT3aBvNo" data-nname="জীবপ্রযুক্তি - পর্ব ০৩" data-npdf="20250809-1754683665-1nDXKyQP.pdf">
+    <span class="class-title bengali-text">জীবপ্রযুক্তি - পর্ব ০৩</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+
+  <li class="class-item" data-vid="xHC-WHJowtE" data-nname="জীবের পরিবেশ বিস্তার - পর্ব ০১" data-npdf="20250820-1755638893-7O3S8JcD.pdf">
+    <span class="class-title bengali-text">জীবের পরিবেশ বিস্তার - পর্ব ০১</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+  <li class="class-item" data-vid="SgTWjYxSoII" data-nname="উদ্ভিদ শারীরতত্ত্ব - পর্ব ০৮" data-npdf="20250825-1756076632-LwLHZM7T.pdf">
+    <span class="class-title bengali-text">উদ্ভিদ শারীরতত্ত্ব - পর্ব ০৮</span>
+    <i class="fas fa-file-pdf text-red-400"></i>
+  </li>
+
+          </ul>
+        </div>
       </div>
-    </div>
-
-    <div class="lg:w-1/4 bg-white rounded-lg shadow-md p-4">
-      <button id="openAddVideoBtn" class="w-full bg-black text-white p-2 rounded mb-4 fake-button">
-        <i class="fas fa-plus mr-2"></i>Add New Class
-      </button>
-
-      <h2 class="text-lg font-semibold mb-4 text-gray-100">Class List</h2>
-      <ul id="classList" class="space-y-2 max-h-96 overflow-y-auto">
-       <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="KaGqg9DhqFE" data-nname="কোষ ও কোষের গঠন পর্ব -০১" data-npdf="20240527-1716747527-YpJ2RGMl.pdf">
-  কোষ ও কোষের গঠন পর্ব -০১ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-</li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="EN-6Teg-ZJM" data-nname="কোষ ও কোষের গঠন পর্ব -০২" data-npdf="20240529-1716919264-WK9TgC7E.pdf">
-  কোষ ও কোষের গঠন পর্ব -০২ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-</li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="tRw6bOrMkwY" data-nname="কোষ ও কোষের গঠন পর্ব -২.২" data-npdf="20240529-1716919264-WK9TgC7E.pdf">
-  কোষ ও কোষের গঠন পর্ব -২.২ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-</li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="n3d04l3AqiE" data-nname="কোষ ও কোষের গঠন পর্ব -০৩" data-npdf="20240531-1717151708-PnLGeH7z.pdf">
-  কোষ ও কোষের গঠন পর্ব -০৩ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-</li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="s8h5dQJbS60" data-nname="কোষ ও কোষের গঠন পর্ব -০৪" data-npdf="20240603-1717361199-EhGZA0c2.pdf">
-  কোষ ও কোষের গঠন পর্ব -০৪ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-</li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="-PFlwWeGcMk" data-nname="কোষ ও কোষের গঠন পর্ব -০৫" data-npdf="20240605-1717589402-21nOUVWK.pdf">
-  কোষ ও কোষের গঠন পর্ব -০৫ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-</li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="_9dxV6E6x5w" data-nname="কোষ ও কোষের গঠন পর্ব -০৬" data-npdf="20240607-1717766552-rRn6UUmR.pdf">
-  কোষ ও কোষের গঠন পর্ব -০৬ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-</li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="VH64cvK6jk4" data-nname="কোষ ও কোষের গঠন পর্ব -০৭" data-npdf="20240610-1718024565-cKvdl9GB.pdf">
-  কোষ ও কোষের গঠন পর্ব -০৭ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-</li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="YmHoUAxsZi4" data-nname="কোষ ও এর গঠন পর্ব ৮" data-npdf="20240612-1718138865-skHiksUO.pdf">
-  কোষ ও এর গঠন পর্ব ৮ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-</li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="lRPPRRxGKzg" data-nname="কোষ ও এর গঠন পর্ব ৯" data-npdf="20240626-1719387029-QgRnVfQ0.pdf">
-  কোষ ও এর গঠন পর্ব ৯ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-</li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="oEQc1LsygKg" data-nname="কোষ ও কোষের গঠনের CQ solving" data-npdf="20240701-1719841089-UuHYXphB.pdf">
-  কোষ ও কোষের গঠনের CQ solving <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-</li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="L55sAexCNm8" data-nname="কোষ ও কোষের গঠন পর্ব -১০" data-npdf="20240705-1720129726-tUGAAdcm.pdf">
-  কোষ ও কোষের গঠন পর্ব -১০ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-</li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="WTmCyvgg15g" data-nname="কোষ বিভাজন - পর্ব ০১" data-npdf="20240909-1725819373-MedBoVyE.pdf">
-  কোষ বিভাজন - পর্ব ০১ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-</li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="CQliZYqkzuk" data-nname="কোষ বিভাজন- পর্ব ০২" data-npdf="20240911-1726002176-CQrADNIg.pdf">
-  কোষ বিভাজন- পর্ব ০২ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-</li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="oVepAPSwxck" data-nname="কোষ বিভাজন - পর্ব ০৩" data-npdf="20240912-1726163847-4D8AyNcJ.pdf">
-  কোষ বিভাজন - পর্ব ০৩ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-</li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="v9GauhdJ6Ks" data-nname="কোষ বিভাজন - পর্ব ০৪" data-npdf="20240915-1726413323-ceNzTXcN.pdf">
-  কোষ বিভাজন - পর্ব ০৪ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-</li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="w2V6hYgfYBc" data-nname="অণুজীব - পর্ব ০১" data-npdf="20241018-1729260451-OrG7QkIT.pdf">
-  অণুজীব - পর্ব ০১ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-</li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="-x0lRkmrnO0" data-nname="অনুজীব - পর্ব ০২" data-npdf="20241021-1729532686-GLqHKciW.pdf">
-  অনুজীব - পর্ব ০২ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-</li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="ov6pGd1hQa8" data-nname="অণুজীব - পর্ব ০৩" data-npdf="20241025-1729803181-JxPNl4fO.pdf">
-  অণুজীব - পর্ব ০৩ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-</li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="-t0uivyL-LI" data-nname="অণুজীব - পর্ব ০৪" data-npdf="20241026-1729885570-fMZIP0IQ.pdf">
-  অণুজীব - পর্ব ০৪ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-</li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="yeGBgn8RZBo" data-nname="অণুজীব - পর্ব ৫.১" data-npdf="20241027-1730049639-WO6miGig.pdf">
-  অনুজীব - পর্ব ৫.১ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-</li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="iiuxcPdyo-Q" data-nname="অণুজীব - পর্ব ৫.২" data-npdf="20241027-1730049639-WO6miGig.pdf">
-  অনুজীব - পর্ব ৫.২ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-</li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="7G-hUr-xpn8" data-nname="অণুজীব - পর্ব ০৬" data-npdf="">
-  অণুজীব - পর্ব ০৬
-</li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="tP5eVmOb6do" data-nname="কোষ রসায়ন - পর্ব ০১" data-npdf="20241202-1733086191-eo9ztJEi.pdf">
-  কোষ রসায়ন - পর্ব ০১ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-</li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="cuHcbam2sz8" data-nname="কোষ রসায়ন - পর্ব ২.১" data-npdf="20241204-1733264159-mq2fghnC.pdf">
-  কোষ রসায়ন - পর্ব ২.১ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-</li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="bN894DP0v8Y" data-nname="কোষ রসায়ন - পর্ব ২.২" data-npdf="20241204-1733264159-mq2fghnC.pdf">
-  কোষ রসায়ন - পর্ব ২.২ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-</li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="nN5_2UQ3sXI" data-nname="কোষ রসায়ন - পর্ব ৩.১" data-npdf="20241206-1733439466-aon9ZcLw.pdf">
-  কোষ রসায়ন - পর্ব ৩.১ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-</li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="p5fwpD5ED6w" data-nname="কোষ রসায়ন - পর্ব ৩.২" data-npdf="20241206-1733439466-aon9ZcLw.pdf">
-  কোষ রসায়ন - পর্ব ৩.২ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-</li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="wen-mzc1r-w" data-nname="কোষ রসায়ন - পর্ব ০৪" data-npdf="20241209-1733696285-pcWsh4Y6.pdf">
-  কোষ রসায়ন - পর্ব ০৪ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-</li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="26788gbIqPU" data-nname="কোষ রসায়ন - পর্ব ৫.১" data-npdf="20241211-1733859880-SLLaMIuD.pdf">
-  কোষ রসায়ন - পর্ব ৫.১ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-</li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="GYnfs4KJfUg" data-nname="কোষ রসায়ন - পর্ব ৫.২" data-npdf="20241211-1733859880-SLLaMIuD.pdf">
-  কোষ রসায়ন - পর্ব ৫.২ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-</li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="dauGNaS91L8" data-nname="কোষ রসায়ন - পর্ব ০৬" data-npdf="20241213-1734034617-3Rej0uUn.pdf">
-  কোষ রসায়ন - পর্ব ০৬ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-</li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="je_HcLK4ygA" data-nname="নগ্নবীজী ও আবৃতবীজী - পর্ব ০১" data-npdf="20250121-1737482232-ZWxDrSXG.pdf">
-  নগ্নবীজী ও আবৃতবীজী - পর্ব ০১ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-</li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="l3BExuFeErI" data-nname="নগ্নবীজী ও আবৃতবীজী - পর্ব ০২" data-npdf="20250123-1737648041-hv4QIukj.pdf">
-  নগ্নবীজী ও আবৃতবীজী - পর্ব ০২ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-</li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="PymKxe2Qo0A" data-nname="নগ্নবীজী ও আবৃতবীজী - পর্ব ০৩" data-npdf="20250127-1737918763-HNNICxs4.pdf">
-  নগ্নবীজী ও আবৃতবীজী - পর্ব ০৩ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-</li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="XDkCF_VgYwk" data-nname="নগ্নবীজী ও আবৃতবীজী - পর্ব ৪.১" data-npdf="20250129-1738089706-dlXBsmeH.pdf">
-  নগ্নবীজী ও আবৃতবীজী - পর্ব ৪.১ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-</li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="pYBFH10fHRI" data-nname="নগ্নবীজী ও আবৃতবীজী - পর্ব ৪.২" data-npdf="20250129-1738089706-dlXBsmeH.pdf">
-  নগ্নবীজী ও আবৃতবীজী - পর্ব ৪.২ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-</li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="2-SUErpLvnw" data-nname="নগ্নবীজী ও আবৃতবীজী  - পর্ব ০৫" data-npdf="20250130-1738173721-cMmSjwTG.pdf">
-  নগ্নবীজী ও আবৃতবীজী  - পর্ব ০৫ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-</li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="f5YyP2eKb-g" data-nname="নগ্নবীজী ও আবৃতবীজী শেষ পর্ব" data-npdf="20250131-1738264487-mnOs2jyR.pdf">
-  নগ্নবীজী ও আবৃতবীজী শেষ পর্ব <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-</li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="3h456CVz270" data-nname="বোটানি টিস্যু ও টিস্যুতন্ত্র - পর্ব ০১" data-npdf="20250204-1738691900-uciSdu4k.pdf">
-  বোটানি টিস্যু ও টিস্যুতন্ত্র - পর্ব ০১ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-</li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="K39ONghcjfg" data-nname="টিস্যু - পর্ব ০২" data-npdf="20250207-1738865555-MFF2bxCT.pdf">
-  টিস্যু - পর্ব ০২ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-</li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="UWWDa5edgWA" data-nname="টিস্যু - পর্ব ০৩" data-npdf="20250210-1739132880-2OVmsui2.pdf">
-  টিস্যু - পর্ব ০৩ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-</li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="aV8vWA_0nko" data-nname="টিস্যু ও টিস্যুতন্ত্রের শেষ অংশ" data-npdf="20250215-1739642333-eysRtIn7.pdf">
-  টিস্যু ও টিস্যুতন্ত্রের শেষ অংশ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-</li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="5BeVBBCQX9A" data-nname="শৈবাল ছত্রাক - পর্ব ০১" data-npdf="20250312-1741720411-XPROBpYS.pdf">
-  শৈবাল ছত্রাক - পর্ব ০১ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-</li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="0EZ8oE97OMY" data-nname="শৈবাল ছত্রাক - পর্ব ০২" data-npdf="20250315-1741978823-P759EvtF.pdf">
-  শৈবাল ছত্রাক - পর্ব ০২ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-</li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="1vesKcPd8ZA" data-nname="শৈবাল ও ছত্রাক - পর্ব ০৩" data-npdf="20250317-1742169559-UI5Y1RWI.pdf">
-  শৈবাল ও ছত্রাক - পর্ব ০৩ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-</li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="MKgdwSYiIRA" data-nname="শৈবাল ও ছত্রাক - পর্ব ০৪" data-npdf="20250322-1742586017-Gx5Zh1Fv.pdf">
-  শৈবাল ও ছত্রাক - পর্ব ০৪ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-</li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="zuQeHvlJf-4" data-nname="শৈবাল ছত্রাক - পর্ব ০৫" data-npdf="">
-  শৈবাল ছত্রাক - পর্ব ০৫
-</li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="Z4UklPc6hqk" data-nname="শৈবাল ছত্রাক - পর্ব ০৬" data-npdf="">
-  শৈবাল ছত্রাক - পর্ব ০৬
-</li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="66sfKI8c9d4" data-nname="ব্রায়োফাইটা ও টেরিডোফাইটা - পর্ব ০১" data-npdf="20250416-1744744668-Wyq92K90.pdf">
-  ব্রায়োফাইটা ও টেরিডোফাইটা - পর্ব ০১ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-</li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="Qk6UMGFvv_c" data-nname="ব্রায়োফাইটা ও টেরিডোফাইটা - পর্ব ০২" data-npdf="20250418-1744922328-CLmvvsbb.pdf">
-  ব্রায়োফাইটা ও টেরিডোফাইটা - পর্ব ০২ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-</li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="JpM1CPE7OUc" data-nname="ব্রায়োফাইটা ও টেরিডোফাইটা - পর্ব ০৩" data-npdf="">
-  ব্রায়োফাইটা ও টেরিডোফাইটা - পর্ব ০৩
-</li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="alOtWfubRNs" data-nname="উদ্ভিদ শারীরতত্ত্ব - পর্ব ০১" data-npdf="20250511-1746949973-ITqvHvj2.pdf">
-  উদ্ভিদ শারীরতত্ত্ব - পর্ব ০১ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-</li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="nS0ftzaYIPc" data-nname="উদ্ভিদ শারীরতত্ত্ব - পর্ব ০২" data-npdf="20250512-1747023610-OojHeCbv.pdf">
-  উদ্ভিদ শারীরতত্ত্ব - পর্ব ০২ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-</li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="74Vrnz3cMfA" data-nname="উদ্ভিদ শারীরতত্ত্ব - পর্ব ০৩" data-npdf="20250518-1747513359-v18QYiKO.pdf">
-  উদ্ভিদ শারীরতত্ত্ব - পর্ব ০৩ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-</li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="ttRtOJU-lAM" data-nname="উদ্ভিদ শারীরতত্ত্ব - পর্ব ০৪" data-npdf="20250519-1747594420-JX8SjE6A.pdf">
-  উদ্ভিদ শারীরতত্ত্ব - পর্ব ০৪ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-</li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="Q1tEY0rOPDQ" data-nname="উদ্ভিদ শারীরতত্ত্ব  - পর্ব ০৫" data-npdf="20250525-1748120604-5tvGYXI7.pdf">
-  উদ্ভিদ শারীরতত্ত্ব  - পর্ব ০৫ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-</li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer active" data-vid="SYu3gZVVIkE" data-nname="উদ্ভিদ শারীরতত্ত্ব - পর্ব ০৬" data-npdf="20250526-1748209981-fgP3HArA.pdf">
-  উদ্ভিদ শারীরতত্ত্ব - পর্ব ০৬ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-</li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="UyTbi0x5Si0" data-nname="উদ্ভিদ শারীরতত্ত্ব  - পর্ব ০৭" data-npdf="20250601-1748720625-egj7Wrm1.pdf">
-  উদ্ভিদ শারীরতত্ত্ব  - পর্ব ০৭ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-</li>
-      </ul>
-    </div>
+    </section>
   </div>
 
-<footer class="bg-gray-900 text-white py-8 px-4 md:px-8 relative overflow-hidden">
-  <!-- Neon Glow Background Effect -->
-  <div class="absolute inset-0 bg-gradient-to-r from-pink-500/20 via-cyan-500/20 to-lime-500/20 animate-pulse"></div>
-  
-  <div class="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left relative z-10">
-    <!-- Brand/Logo Section -->
-    <div>
-      <h2 class="text-3xl font-extrabold tracking-wider text-lime-400>Bondi Pathshala</h2>
-      <p class="mt-2 text-lime-300 t-medium">Bondi Pathshala</p>
-    </div>
-
-    <!-- Navigation Links -->
-    <div>
-      <h3 class="text-lg font-bold text-lime-400 mb-4 drop-shadow-[0_0_8px_rgba(132,204,22,0.6)]">মন ফ্রেশ থাকলে পড়া বেশি মনে থাকে!</h3>
-      <ul class="space-y-2 text-cyan-300 text-sm">
-  <li>পড়ায় ঝড় তুলো!</li>
-  <li>রঙিন নোট ফাটাও!</li>
-  <li> বই পড়ো!</li>
-      </ul>
-    </div>
-
-    <!-- Social Media & Contact -->
-    <div>
-      <h3 class="text-lg font-bold text-lime-400 mb-4 drop-shadow-[0_0_8px_rgba(132,204,22,0.6)]">Connect With Us</h3>
-      <div class="flex justify-center md:justify-start space-x-4 mb-4">
-        <a href="#" class="hover:scale-110 transform transition-transform duration-300 drop-shadow-[0_0_6px_rgba(236,72,153,0.5)]">
-          <svg class="w-6 h-6 fill-current text-cyan-300 hover:text-pink-400" viewBox="0 0 24 24">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/>
-          </svg>
-        </a>
-        <a href="#" class="hover:scale-110 transform transition-transform duration-300 drop-shadow-[0_0_6px_rgba(236,72,153,0.5)]">
-          <svg class="w-6 h-6 fill-current text-cyan-300 hover:text-pink-400" viewBox="0 0 24 24">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 14v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1h-6v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
-          </svg>
-        </a>
+  <footer>
+    <div class="footer-content">
+      <div class="footer-brand">
+        <h2 class="text-2xl font-bold text-teal-300">Bondi Pathshala</h2>
+        <p class="mt-2 text-teal-200">শিক্ষা জীবনের সবচেয়ে বড় সম্পদ</p>
       </div>
-      <p class="text-cyan-300 text-sm font-medium">Email: <a href="mailto:arnoy799@gmail.com" class="hover:text-pink-400 transition-colors duration-300 hover:drop-shadow-[0_0_6px_rgba(236,72,153,0.5)]">arnoy799@gmail.com</a></p>
+      
+      <div class="footer-links">
+        <h3 class="text-lg font-bold text-teal-300 mb-4">মন ফ্রেশ থাকলে পড়া বেশি মনে থাকে!</h3>
+        <ul class="space-y-2 text-teal-200">
+          <li class="bengali-text">পড়ায় ঝড় তুলো!</li>
+          <li class="bengali-text">বই পড়ো!</li>
+        </ul>
+      </div>
+      
+      <div class="footer-social">
+        <h3 class="text-lg font-bold text-teal-300 mb-4">Connect With Us</h3>
+        <div class="social-icons">
+          <a href="#" class="social-icon">
+            <i class="fab fa-facebook-f text-white"></i>
+          </a>
+          <a href="#" class="social-icon">
+            <i class="fab fa-youtube text-white"></i>
+          </a>
+          <a href="#" class="social-icon">
+            <i class="fab fa-instagram text-white"></i>
+          </a>
+        </div>
+        <p class="text-teal-200">
+          Email: <a href="mailto:arnoy799@gmail.com" class="hover:text-white transition-colors">arnoy799@gmail.com</a>
+        </p>
+      </div>
     </div>
-  </div>
+    
+    <div class="border-t border-teal-800 mt-8 pt-4 text-center text-teal-300 text-sm">
+      <p>© 2025 Bondi Pathshala. All rights reserved.</p>
+    </div>
+  </footer>
 
-  <!-- Bottom Bar -->
-  <div class="border-t border-pink-500/50 mt-8 pt-4 text-center text-cyan-300 text-sm font-medium">
-    <p>© 2025 Bondi Pathshala. All rights reserved.</p>
-  </div>
-</footer>
-<div id="playerToast"
-     style="position: fixed; bottom: 10%; left: 50%; transform: translateX(-50%);
-            background-color: rgba(0, 0, 0, 0.8); color: white;
-            padding: 10px 20px; border-radius: 8px;
-            font-size: 16px; opacity: 0; pointer-events: none;
-            transition: opacity 0.3s ease;">
-<script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
-<script src="script.js"></script>
+  <!-- Status Message Element -->
+  <div id="statusMessage" class="status-message"></div>
+
+  <!-- YouTube IFrame API -->
+  <script src="https://www.youtube.com/iframe_api"></script>
+  <script src="script.js"></script>
 </body>
 </html>
