@@ -1,34 +1,46 @@
-// Global variables
-let currentVideoId = 'RUQcm3vIbWo'; // Default video ID
+// Global State
 let youtubePlayer;
+let currentVideoId = localStorage.getItem('lastSelectedVideo') || 'RUQcm3vIbWo'; // Load last or default
+let progressInterval;
 
-// Function to show status messages
+// DOM Elements
+const statusEl = document.getElementById('statusMessage');
+const downloadPdfBtn = document.getElementById('downloadPdfBtn');
+const classListUl = document.getElementById('classList');
+
+// --- 1. Utility Functions ---
+
 function showStatusMessage(message, isError = false) {
-  const statusEl = document.getElementById('statusMessage');
   statusEl.textContent = message;
-  statusEl.className = 'status-message';
+  statusEl.className = `status-message ${isError ? 'error' : ''}`; // Add specific error styling in CSS if needed
   statusEl.style.background = isError ? '#e53e3e' : '#38b2ac';
+
+  // Force reflow for restart animation
+  void statusEl.offsetWidth; 
+  statusEl.classList.add('show');
+
+  // Clear previous timer if exists to prevent overlapping
+  if (statusEl.hideTimer) clearTimeout(statusEl.hideTimer);
   
-  setTimeout(() => {
-    statusEl.classList.add('show');
-  }, 10);
-  
-  setTimeout(() => {
+  statusEl.hideTimer = setTimeout(() => {
     statusEl.classList.remove('show');
   }, 3000);
 }
 
-// Initialize YouTube Player
+// --- 2. YouTube API Logic ---
+
 function onYouTubeIframeAPIReady() {
   youtubePlayer = new YT.Player('player', {
     height: '100%',
     width: '100%',
-    videoId: currentVideoId,
+    // FIX: Do not set videoId here immediately to prevent double loading
+    // We will load the correct video in onPlayerReady
     playerVars: {
       'playsinline': 1,
       'rel': 0,
       'modestbranding': 1,
-      'showinfo': 0
+      'showinfo': 0,
+      'iv_load_policy': 3 // Hide annotations
     },
     events: {
       'onReady': onPlayerReady,
@@ -38,55 +50,84 @@ function onYouTubeIframeAPIReady() {
 }
 
 function onPlayerReady(event) {
-  console.log('YouTube player is ready');
-  showStatusMessage('Player is ready. Select a class to start learning!');
+  console.log('Player Ready');
+  
+  // FIX: Load the last video AND the last timestamp together
+  const savedTime = parseFloat(localStorage.getItem(`videoProgress_${currentVideoId}`)) || 0;
+  
+  event.target.loadVideoById({
+    videoId: currentVideoId,
+    startSeconds: savedTime
+  });
+
+  // Sync UI to match the video we just loaded
+  highlightClassItem(currentVideoId);
+  showStatusMessage('Player ready. Resuming session...');
 }
 
 function onPlayerStateChange(event) {
-  // You can add custom behavior based on player state changes
-}
-
-// Function to change video
-function changeVideo(videoId) {
-  if (youtubePlayer && youtubePlayer.loadVideoById) {
-    youtubePlayer.loadVideoById(videoId);
-    currentVideoId = videoId;
-    console.log(`Changed video to: ${videoId}`);
-    
-    // Load saved progress if available
-    setTimeout(() => {
-      const progressKey = `videoProgress_${videoId}`;
-      const savedTime = parseFloat(localStorage.getItem(progressKey));
-      if (!isNaN(savedTime) && savedTime > 0) {
-        youtubePlayer.seekTo(savedTime, true);
-        console.log(`Resumed from saved time: ${savedTime.toFixed(2)}s`);
-      }
-    }, 500);
+  // YT.PlayerState.PLAYING = 1, PAUSED = 2, ENDED = 0
+  if (event.data === YT.PlayerState.PLAYING) {
+    startProgressTracking();
+  } else {
+    stopProgressTracking();
+    // Save immediately on pause for precision
+    saveCurrentProgress(); 
   }
 }
 
-// Handle class selection
-function attachClassItemListeners() {
-  const classItems = document.querySelectorAll('.class-item');
-  const downloadPdfBtn = document.getElementById('downloadPdfBtn');
+function changeVideo(videoId) {
+  if (!youtubePlayer || !youtubePlayer.loadVideoById) return;
 
-  classItems.forEach(item => {
-    item.addEventListener('click', () => {
-      const videoId = item.dataset.vid;
-      const className = item.dataset.nname;
-      
-      // Update current video
-      currentVideoId = videoId;
-      localStorage.setItem('lastSelectedVideo', videoId);
-      
-      // Change the video
-      changeVideo(videoId);
-      
-      // Update UI
-      classItems.forEach(i => i.classList.remove('active'));
+  // 1. Save progress of the PREVIOUS video before switching
+  saveCurrentProgress();
+
+  // 2. Get progress of the NEW video
+  const savedTime = parseFloat(localStorage.getItem(`videoProgress_${videoId}`)) || 0;
+
+  // 3. Update State
+  currentVideoId = videoId;
+  localStorage.setItem('lastSelectedVideo', videoId);
+
+  // 4. Load new video at exact start time (FIX: No seekTo needed)
+  youtubePlayer.loadVideoById({
+    videoId: videoId,
+    startSeconds: savedTime
+  });
+
+  console.log(`Switched to ${videoId} at ${savedTime}s`);
+}
+
+// --- 3. Progress Tracking ---
+
+function saveCurrentProgress() {
+  if (youtubePlayer && youtubePlayer.getCurrentTime) {
+    const time = youtubePlayer.getCurrentTime();
+    if (time > 0) {
+      localStorage.setItem(`videoProgress_${currentVideoId}`, time.toFixed(2));
+    }
+  }
+}
+
+function startProgressTracking() {
+  stopProgressTracking(); // Prevent duplicates
+  progressInterval = setInterval(saveCurrentProgress, 5000); // Save every 5s
+}
+
+function stopProgressTracking() {
+  if (progressInterval) clearInterval(progressInterval);
+}
+
+// --- 4. UI Logic ---
+
+function highlightClassItem(videoId) {
+  const items = document.querySelectorAll('.class-item');
+  
+  items.forEach(item => {
+    if (item.dataset.vid === videoId) {
       item.classList.add('active');
       
-      // Update PDF link
+      // Update PDF Button logic
       const pdfLink = item.dataset.npdf;
       if (pdfLink) {
         downloadPdfBtn.href = `https://www.bondipathshala.com.bd/pdf/${pdfLink}`;
@@ -94,164 +135,124 @@ function attachClassItemListeners() {
       } else {
         downloadPdfBtn.classList.add('hidden');
       }
-      
-      // Show status message
-      showStatusMessage(`Now playing: ${className}`);
-    });
+
+      // Scroll into view if needed
+      item.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    } else {
+      item.classList.remove('active');
+    }
   });
 }
 
-// Custom Share Button Functionality
+function renderClassList() {
+  const storedVideos = JSON.parse(localStorage.getItem('customVideos')) || [];
+  
+  // Clear existing list to prevent duplicates
+  classListUl.innerHTML = '';
+
+  storedVideos.forEach(video => {
+    const li = document.createElement('li');
+    li.className = 'class-item';
+    li.dataset.vid = video.id;
+    li.dataset.nname = video.title;
+    li.dataset.npdf = video.pdfLink || '';
+    
+    // Modern HTML structure
+    li.innerHTML = `
+      <span class="class-title bengali-text">${video.title}</span>
+      ${video.pdfLink ? `<i class="fas fa-file-pdf" style="color: var(--success)"></i>` : ''}
+    `;
+    
+    // Event Listener (Delegated logic per item)
+    li.addEventListener('click', () => {
+      // Don't reload if clicking the same video
+      if (currentVideoId === video.id) return;
+      
+      highlightClassItem(video.id);
+      changeVideo(video.id);
+      showStatusMessage(`Playing: ${video.title}`);
+    });
+
+    classListUl.appendChild(li);
+  });
+}
+
+// --- 5. Inputs & Keyboard ---
+
+// Custom Share
 const customShareBtn = document.getElementById('customShareBtn');
 if (customShareBtn) {
-  customShareBtn.addEventListener('click', () => {
-    if (currentVideoId) {
-      const youtubeUrl = `https://www.youtube.com/watch?v=${currentVideoId}`;
-      if (navigator.share) {
-        navigator.share({
-          title: 'Bondi Pathshala Video',
-          text: 'Check out this educational video from Bondi Pathshala',
-          url: youtubeUrl
-        }).catch(err => {
-          console.error('Error sharing:', err);
+  customShareBtn.addEventListener('click', async () => {
+    if (!currentVideoId) return;
+    
+    const url = `https://www.youtube.com/watch?v=${currentVideoId}`;
+    
+    // Modern Share API support
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'Bondi Pathshala Class',
+          text: 'Watch this class!',
+          url: url
         });
-      } else {
-        navigator.clipboard.writeText(youtubeUrl).then(() => {
-          showStatusMessage('Video link copied to clipboard!');
-        }).catch(err => {
-          console.error('Failed to copy video link: ', err);
-          showStatusMessage('Failed to copy video link. Please try again.', true);
-        });
+      } catch (err) {
+        console.log('Share dismissed');
       }
     } else {
-      showStatusMessage('No video selected to share.', true);
+      // Fallback
+      navigator.clipboard.writeText(url);
+      showStatusMessage('Link copied to clipboard!');
     }
   });
 }
 
-// YouTube button functionality
-const downloadEmojiBtn = document.getElementById('downloadEmojiBtn');
-downloadEmojiBtn.addEventListener('click', () => {
-  if (currentVideoId) {
-    const youtubeUrl = `https://www.youtube.com/watch?v=${currentVideoId}`;
-    window.open(youtubeUrl, '_blank');
-  } else {
-    showStatusMessage('No video selected', true);
-  }
-});
+// Keyboard Shortcuts
+document.addEventListener('keydown', (e) => {
+  if (['INPUT', 'TEXTAREA'].includes(e.target.tagName)) return;
+  if (!youtubePlayer || !youtubePlayer.getVolume) return;
 
-// Load videos from localStorage
-const storedVideos = JSON.parse(localStorage.getItem('customVideos')) || [];
-const classListUl = document.getElementById('classList');
-storedVideos.forEach(video => {
-  const li = document.createElement('li');
-  li.className = 'class-item';
-  li.dataset.vid = video.id;
-  li.dataset.nname = video.title;
-  li.dataset.npdf = video.pdfLink || '';
-  li.innerHTML = `
-    <span class="class-title bengali-text">${video.title}</span>
-    ${video.pdfLink ? `<i class="fas fa-file-pdf text-red-400"></i>` : ''}
-  `;
-  classListUl.appendChild(li);
-});
-attachClassItemListeners();
+  const key = e.key.toLowerCase();
 
-// Auto-load last selected video from localStorage and scroll into view
-window.addEventListener('DOMContentLoaded', () => {
-  setTimeout(() => {
-    const lastVideoId = localStorage.getItem('lastSelectedVideo');
-    if (lastVideoId) {
-      const lastItem = [...document.querySelectorAll('.class-item')].find(item => item.dataset.vid === lastVideoId);
-      if (lastItem) {
-        lastItem.click();
-        lastItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-    } else {
-      // Select first video by default if none is saved
-      const firstItem = document.querySelector('.class-item');
-      if (firstItem) {
-        firstItem.click();
-      }
-    }
-  }, 500);
-});
-
-// Add keyboard shortcuts
-document.addEventListener('keydown', (event) => {
-  // Only trigger if not focused on input elements
-  if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') return;
-  
-  const key = event.key.toLowerCase();
   switch (key) {
-    case 'u': {
-      // Volume up
-      const currentVolume = youtubePlayer.getVolume();
-      const newVolume = Math.min(100, currentVolume + 10);
-      youtubePlayer.setVolume(newVolume);
-      showStatusMessage(`Volume: ${newVolume}%`);
+    case 'u': // Vol Up
+      youtubePlayer.setVolume(Math.min(100, youtubePlayer.getVolume() + 10));
+      showStatusMessage(`Volume: ${youtubePlayer.getVolume()}%`);
       break;
-    }
-    case 'd': {
-      // Volume down
-      const currentVolume = youtubePlayer.getVolume();
-      const newVolume = Math.max(0, currentVolume - 10);
-      youtubePlayer.setVolume(newVolume);
-      showStatusMessage(`Volume: ${newVolume}%`);
+    case 'd': // Vol Down
+      youtubePlayer.setVolume(Math.max(0, youtubePlayer.getVolume() - 10));
+      showStatusMessage(`Volume: ${youtubePlayer.getVolume()}%`);
       break;
-    }
-    case 'a': {
-      // Slow down playback
-      const currentRate = youtubePlayer.getPlaybackRate();
-      const newRate = Math.max(0.25, currentRate - 0.25);
-      youtubePlayer.setPlaybackRate(newRate);
-      showStatusMessage(`Playback speed: ${newRate}x`);
-      break;
-    }
-    case 'b': {
-      // Speed up playback
-      const currentRate = youtubePlayer.getPlaybackRate();
-      const newRate = currentRate + 0.25;
-      youtubePlayer.setPlaybackRate(newRate);
-      showStatusMessage(`Playback speed: ${newRate}x`);
-      break;
-    }
-    case 'f': {
-      // Toggle fullscreen
-      const iframe = document.querySelector('#player');
-      if (document.fullscreenElement) {
+    case 'f': // Fullscreen
+      const iframe = document.getElementById('player');
+      if (!document.fullscreenElement) {
+        iframe.requestFullscreen().catch(err => console.log(err));
+      } else {
         document.exitFullscreen();
-      } else {
-        iframe.requestFullscreen();
       }
       break;
-    }
-    case ' ': {
-      // Spacebar to play/pause
-      event.preventDefault();
-      if (youtubePlayer.getPlayerState() === 1) { // Playing
-        youtubePlayer.pauseVideo();
-      } else {
-        youtubePlayer.playVideo();
-      }
+    case ' ': // Play/Pause
+    case 'k':
+      e.preventDefault();
+      const state = youtubePlayer.getPlayerState();
+      state === 1 ? youtubePlayer.pauseVideo() : youtubePlayer.playVideo();
       break;
-    }
+    case 'arrowright': // Seek forward 5s
+      e.preventDefault();
+      youtubePlayer.seekTo(youtubePlayer.getCurrentTime() + 5, true);
+      break;
+    case 'arrowleft': // Seek back 5s
+      e.preventDefault();
+      youtubePlayer.seekTo(youtubePlayer.getCurrentTime() - 5, true);
+      break;
   }
 });
 
-// Store time every 10 seconds
-setInterval(() => {
-  if (youtubePlayer && currentVideoId && youtubePlayer.getPlayerState() === 1) { // Playing
-    const currentTime = youtubePlayer.getCurrentTime();
-    const progressKey = `videoProgress_${currentVideoId}`;
-    localStorage.setItem(progressKey, currentTime);
-    console.log(`Saved progress: ${currentTime.toFixed(2)}s for video ${currentVideoId}`);
-  }
-}, 10000);
+// --- 6. Initialization ---
 
-// Show welcome message
-window.addEventListener('load', () => {
-  setTimeout(() => {
-    showStatusMessage('Welcome to Bondi Pathshala! Select a class to begin.');
-  }, 1000);
+// Render list immediately
+renderClassList();
+
+// Save state when closing/refreshing tab
+window.addEventListener('beforeunload', () => {
+  saveCurrentProgress();
 });
