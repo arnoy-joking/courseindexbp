@@ -1,4 +1,3 @@
-
 // Global variables
 let currentVideoId = 'RUQcm3vIbWo'; // Default video ID
 let youtubePlayer;
@@ -41,6 +40,28 @@ function onYouTubeIframeAPIReady() {
 function onPlayerReady(event) {
   console.log('YouTube player is ready');
   showStatusMessage('Player is ready. Select a class to start learning!');
+
+  // DELAYED AUTO-LOAD LOGIC FOR LAST PLAYED VIDEO
+  setTimeout(() => {
+    const lastVideoId = localStorage.getItem('lastSelectedVideo');
+    if (lastVideoId && lastVideoId !== currentVideoId) {
+      // Try selecting the corresponding class item & loading the video
+      const lastItem = [...document.querySelectorAll('.class-item')].find(item => item.dataset.vid === lastVideoId);
+      if (lastItem) {
+        lastItem.click();
+        lastItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } else {
+        // If not found, just change the video
+        changeVideo(lastVideoId);
+      }
+    } else if (!lastVideoId) {
+      // Select first video by default if none is saved
+      const firstItem = document.querySelector('.class-item');
+      if (firstItem) {
+        firstItem.click();
+      }
+    }
+  }, 2500); // <-- delay for 2.5 seconds to let the player embed first
 }
 
 function onPlayerStateChange(event) {
@@ -158,25 +179,8 @@ storedVideos.forEach(video => {
 });
 attachClassItemListeners();
 
-// Auto-load last selected video from localStorage and scroll into view
-window.addEventListener('DOMContentLoaded', () => {
-  setTimeout(() => {
-    const lastVideoId = localStorage.getItem('lastSelectedVideo');
-    if (lastVideoId) {
-      const lastItem = [...document.querySelectorAll('.class-item')].find(item => item.dataset.vid === lastVideoId);
-      if (lastItem) {
-        lastItem.click();
-        lastItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-    } else {
-      // Select first video by default if none is saved
-      const firstItem = document.querySelector('.class-item');
-      if (firstItem) {
-        firstItem.click();
-      }
-    }
-  }, 500);
-});
+// The window's DOMContentLoaded event no longer does last-selected-video auto-load
+// It now occurs in onPlayerReady(), with a 2.5s delay
 
 // Add keyboard shortcuts
 document.addEventListener('keydown', (event) => {
