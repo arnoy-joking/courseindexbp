@@ -1,11 +1,10 @@
-// --- Page namespace extracted from filename ---
+// --- Per-page namespace extraction from file name ---
 const PAGE_NAMESPACE = (() => {
   const path = window.location.pathname;
   const matches = path.match(/([^\/]+)\.html?$/i);
   return (matches && matches[1]) ? matches[1] : 'default';
 })();
 
-// --- Functions for namespaced localStorage keys ---
 function getProgressKey(videoId) {
   return `${PAGE_NAMESPACE}_videoProgress_${videoId}`;
 }
@@ -16,28 +15,26 @@ function getCustomVideosKey() {
   return `${PAGE_NAMESPACE}_customVideos`;
 }
 
-// Global variables
-let currentVideoId = 'RUQcm3vIbWo'; // Default video ID
+let currentVideoId = 'RUQcm3vIbWo'; // fallback video
 let youtubePlayer;
+let playerReady = false;
 
-// Function to show status messages
+// Toast/status message
 function showStatusMessage(message, isError = false) {
-  const statusEl = document.getElementById('statusMessage');
+  let statusEl = document.getElementById('statusMessage');
   statusEl.textContent = message;
-  statusEl.className = 'status-message';
   statusEl.style.background = isError ? '#e53e3e' : '#38b2ac';
-
-  setTimeout(() => {
-    statusEl.classList.add('show');
-  }, 10);
-
-  setTimeout(() => {
+  statusEl.style.opacity = '1';
+  statusEl.classList.add('show');
+  clearTimeout(statusEl._hideTimeout);
+  statusEl._hideTimeout = setTimeout(() => {
+    statusEl.style.opacity = '0';
     statusEl.classList.remove('show');
-  }, 3000);
+  }, 1800);
 }
 
-// Initialize YouTube Player
-function onYouTubeIframeAPIReady() {
+// YouTube Iframe API - Embed player on div#player
+window.onYouTubeIframeAPIReady = function() {
   youtubePlayer = new YT.Player('player', {
     height: '100%',
     width: '100%',
@@ -53,17 +50,14 @@ function onYouTubeIframeAPIReady() {
       'onStateChange': onPlayerStateChange
     }
   });
-}
+};
 
 function onPlayerReady(event) {
-  console.log('YouTube player is ready');
+  playerReady = true;
   showStatusMessage('Player is ready. Select a class to start learning!');
-
-  // DELAYED AUTO-LOAD LOGIC FOR LAST PLAYED VIDEO, NAMESPACED
   setTimeout(() => {
     const lastVideoId = localStorage.getItem(getLastSelectedKey());
     if (lastVideoId && lastVideoId !== currentVideoId) {
-      // Try selecting the corresponding class item & loading the video
       const lastItem = [...document.querySelectorAll('.class-item')].find(item => item.dataset.vid === lastVideoId);
       if (lastItem) {
         lastItem.click();
@@ -72,206 +66,188 @@ function onPlayerReady(event) {
         changeVideo(lastVideoId);
       }
     } else if (!lastVideoId) {
-      // Select first video by default if none is saved
       const firstItem = document.querySelector('.class-item');
-      if (firstItem) {
-        firstItem.click();
-      }
+      if (firstItem) firstItem.click();
     }
-  }, 2500); // 2.5s delay to let the player embed first
+  }, 2500);
 }
 
-function onPlayerStateChange(event) {
-  // You can add custom behavior based on player state changes
-}
-
-// Function to change video
-function changeVideo(videoId) {
+function changeVideo(videoId, attempt=0) {
   if (youtubePlayer && youtubePlayer.loadVideoById) {
-    youtubePlayer.loadVideoById(videoId);
-    currentVideoId = videoId;
-    console.log(`Changed video to: ${videoId}`);
-    // Load saved progress if available, namespaced
-    setTimeout(() => {
-      const progressKey = getProgressKey(videoId);
-      const savedTime = parseFloat(localStorage.getItem(progressKey));
-      if (!isNaN(savedTime) && savedTime > 0) {
-        youtubePlayer.seekTo(savedTime, true);
-        console.log(`Resumed from saved time: ${savedTime.toFixed(2)}s`);
-      }
-    }, 500);
+    try {
+      youtubePlayer.loadVideoById(videoId);
+      currentVideoId = videoId;
+      showStatusMessage("Video loaded");
+
+      setTimeout(() => {
+        const progressKey = getProgressKey(videoId);
+        const savedTime = parseFloat(localStorage.getItem(progressKey));
+        if (!isNaN(savedTime) && savedTime > 0) {
+          youtubePlayer.seekTo(savedTime, true);
+          showStatusMessage(`Resumed at ${savedTime.toFixed(1)}s`);
+        }
+      }, 600);
+
+    } catch (e) {
+      if (attempt < 3) setTimeout(() => changeVideo(videoId, attempt + 1), 600);
+      else showStatusMessage("Failed to load video", true);
+    }
+  } else {
+    if (attempt < 6) setTimeout(() => changeVideo(videoId, attempt + 1), 400);
+    else showStatusMessage("Player not ready", true);
   }
 }
 
-// Handle class selection
+function onPlayerStateChange(event) {
+  // You can extend with custom UI feedback here if you want
+}
+
+// Attach listeners to class items for list
 function attachClassItemListeners() {
   const classItems = document.querySelectorAll('.class-item');
   const downloadPdfBtn = document.getElementById('downloadPdfBtn');
 
   classItems.forEach(item => {
-    item.addEventListener('click', () => {
+    if (item._eventListener) item.removeEventListener('click', item._eventListener);
+  });
+
+  classItems.forEach(item => {
+    const listener = () => {
       const videoId = item.dataset.vid;
       const className = item.dataset.nname;
-
-      // Update current video
       currentVideoId = videoId;
       localStorage.setItem(getLastSelectedKey(), videoId);
 
-      // Change the video
       changeVideo(videoId);
 
-      // Update UI
       classItems.forEach(i => i.classList.remove('active'));
       item.classList.add('active');
 
-      // Update PDF link
       const pdfLink = item.dataset.npdf;
-      if (pdfLink) {
-        downloadPdfBtn.href = `https://www.bondipathshala.com.bd/pdf/${pdfLink}`;
-        downloadPdfBtn.classList.remove('hidden');
-      } else {
-        downloadPdfBtn.classList.add('hidden');
+      if (downloadPdfBtn) {
+        if (pdfLink) {
+          downloadPdfBtn.href = `https://www.bondipathshala.com.bd/pdf/${pdfLink}`;
+          downloadPdfBtn.classList.remove('hidden');
+        } else {
+          downloadPdfBtn.classList.add('hidden');
+        }
       }
 
-      // Show status message
       showStatusMessage(`Now playing: ${className}`);
-    });
+    };
+    item.addEventListener('click', listener);
+    item._eventListener = listener;
   });
 }
-
-// Custom Share Button Functionality
-const customShareBtn = document.getElementById('customShareBtn');
-if (customShareBtn) {
-  customShareBtn.addEventListener('click', () => {
-    if (currentVideoId) {
-      const youtubeUrl = `https://www.youtube.com/watch?v=${currentVideoId}`;
-      if (navigator.share) {
-        navigator.share({
-          title: 'Bondi Pathshala Video',
-          text: 'Check out this educational video from Bondi Pathshala',
-          url: youtubeUrl
-        }).catch(err => {
-          console.error('Error sharing:', err);
-        });
-      } else {
-        navigator.clipboard.writeText(youtubeUrl).then(() => {
-          showStatusMessage('Video link copied to clipboard!');
-        }).catch(err => {
-          console.error('Failed to copy video link: ', err);
-          showStatusMessage('Failed to copy video link. Please try again.', true);
-        });
-      }
-    } else {
-      showStatusMessage('No video selected to share.', true);
-    }
-  });
-}
-
-// YouTube button functionality
-const downloadEmojiBtn = document.getElementById('downloadEmojiBtn');
-downloadEmojiBtn.addEventListener('click', () => {
-  if (currentVideoId) {
-    const youtubeUrl = `https://www.youtube.com/watch?v=${currentVideoId}`;
-    window.open(youtubeUrl, '_blank');
-  } else {
-    showStatusMessage('No video selected', true);
-  }
-});
-
-// Load videos from localStorage, namespaced
-const storedVideos = JSON.parse(localStorage.getItem(getCustomVideosKey())) || [];
-const classListUl = document.getElementById('classList');
-storedVideos.forEach(video => {
-  const li = document.createElement('li');
-  li.className = 'class-item';
-  li.dataset.vid = video.id;
-  li.dataset.nname = video.title;
-  li.dataset.npdf = video.pdfLink || '';
-  li.innerHTML = `
-    <span class="class-title bengali-text">${video.title}</span>
-    ${video.pdfLink ? `<i class="fas fa-file-pdf text-red-400"></i>` : ''}
-  `;
-  classListUl.appendChild(li);
-});
 attachClassItemListeners();
 
-// Removed DOMContentLoaded auto-load; this now happens in onPlayerReady() with namespace!
+// Share button
+const customShareBtn = document.getElementById('customShareBtn');
+if (customShareBtn) {
+  customShareBtn.onclick = () => {
+    if (currentVideoId) {
+      const url = `https://www.youtube.com/watch?v=${currentVideoId}`;
+      navigator.clipboard.writeText(url)
+        .then(() => showStatusMessage('Video link copied!'))
+        .catch(() => showStatusMessage('Copy failed.', true));
+    } else showStatusMessage('No video selected.', true);
+  };
+}
 
-// Add keyboard shortcuts
-document.addEventListener('keydown', (event) => {
-  // Only trigger if not focused on input elements
-  if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') return;
+// Download YouTube button
+const downloadEmojiBtn = document.getElementById('downloadEmojiBtn');
+if (downloadEmojiBtn) {
+  downloadEmojiBtn.addEventListener('click', () => {
+    if (currentVideoId) {
+      window.open(`https://www.youtube.com/watch?v=${currentVideoId}`, '_blank');
+    } else {
+      showStatusMessage("No video selected", true);
+    }
+  });
+}
 
-  const key = event.key.toLowerCase();
-  switch (key) {
-    case 'u': {
-      // Volume up
-      const currentVolume = youtubePlayer.getVolume();
-      const newVolume = Math.min(100, currentVolume + 10);
-      youtubePlayer.setVolume(newVolume);
-      showStatusMessage(`Volume: ${newVolume}%`);
-      break;
-    }
-    case 'd': {
-      // Volume down
-      const currentVolume = youtubePlayer.getVolume();
-      const newVolume = Math.max(0, currentVolume - 10);
-      youtubePlayer.setVolume(newVolume);
-      showStatusMessage(`Volume: ${newVolume}%`);
-      break;
-    }
-    case 'a': {
-      // Slow down playback
-      const currentRate = youtubePlayer.getPlaybackRate();
-      const newRate = Math.max(0.25, currentRate - 0.25);
-      youtubePlayer.setPlaybackRate(newRate);
-      showStatusMessage(`Playback speed: ${newRate}x`);
-      break;
-    }
-    case 'b': {
-      // Speed up playback
-      const currentRate = youtubePlayer.getPlaybackRate();
-      const newRate = currentRate + 0.25;
-      youtubePlayer.setPlaybackRate(newRate);
-      showStatusMessage(`Playback speed: ${newRate}x`);
-      break;
-    }
-    case 'f': {
-      // Toggle fullscreen
-      const iframe = document.querySelector('#player');
-      if (document.fullscreenElement) {
-        document.exitFullscreen();
-      } else {
-        iframe.requestFullscreen();
-      }
-      break;
-    }
-    case ' ': {
-      // Spacebar to play/pause
-      event.preventDefault();
-      if (youtubePlayer.getPlayerState() === 1) { // Playing
-        youtubePlayer.pauseVideo();
-      } else {
-        youtubePlayer.playVideo();
-      }
-      break;
-    }
-  }
-});
-
-// Store time every 10 seconds (namespaced)
-setInterval(() => {
-  if (youtubePlayer && currentVideoId && youtubePlayer.getPlayerState() === 1) { // Playing
-    const currentTime = youtubePlayer.getCurrentTime();
-    const progressKey = getProgressKey(currentVideoId);
-    localStorage.setItem(progressKey, currentTime);
-    console.log(`Saved progress: ${currentTime.toFixed(2)}s for video ${currentVideoId}`);
-  }
-}, 10000);
-
-// Show welcome message
 window.addEventListener('load', () => {
   setTimeout(() => {
     showStatusMessage('Welcome to Bondi Pathshala! Select a class to begin.');
   }, 1000);
 });
+
+// Keyboard shortcuts
+document.addEventListener('keydown', (event) => {
+  if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA'
+      || event.target.isContentEditable) return;
+
+  if (!playerReady || !youtubePlayer) return;
+
+  const key = event.key.toLowerCase();
+  try {
+    switch (key) {
+      case 'u': {
+        const currentVolume = youtubePlayer.getVolume();
+        const newVolume = Math.min(100, currentVolume + 10);
+        youtubePlayer.setVolume(newVolume);
+        showStatusMessage(`Volume: ${newVolume}%`);
+        break;
+      }
+      case 'd': {
+        const currentVolume = youtubePlayer.getVolume();
+        const newVolume = Math.max(0, currentVolume - 10);
+        youtubePlayer.setVolume(newVolume);
+        showStatusMessage(`Volume: ${newVolume}%`);
+        break;
+      }
+      case 'a': {
+        const currentRate = youtubePlayer.getPlaybackRate();
+        const newRate = Math.max(0.25, currentRate - 0.25);
+        youtubePlayer.setPlaybackRate(newRate);
+        showStatusMessage(`Playback speed: ${newRate}x`);
+        break;
+      }
+      case 'b': {
+        const currentRate = youtubePlayer.getPlaybackRate();
+        const newRate = currentRate + 0.25;
+        youtubePlayer.setPlaybackRate(newRate);
+        showStatusMessage(`Playback speed: ${newRate}x`);
+        break;
+      }
+      case 'f': {
+        const iframe = document.getElementById('player');
+        if (document.fullscreenElement) {
+          document.exitFullscreen();
+        } else {
+          if (iframe.requestFullscreen) iframe.requestFullscreen();
+        }
+        break;
+      }
+      case ' ':
+        event.preventDefault();
+        if (youtubePlayer.getPlayerState() === 1) youtubePlayer.pauseVideo();
+        else youtubePlayer.playVideo();
+        break;
+      case 'j':
+        youtubePlayer.seekTo(Math.max(0, youtubePlayer.getCurrentTime() - 10), true);
+        showStatusMessage('⏪ -10s');
+        break;
+      case 'l':
+        youtubePlayer.seekTo(youtubePlayer.getCurrentTime() + 10, true);
+        showStatusMessage('⏩ +10s');
+        break;
+      case 'arrowleft':
+        youtubePlayer.seekTo(Math.max(0, youtubePlayer.getCurrentTime() - 5), true);
+        showStatusMessage('⏪ -5s');
+        break;
+      case 'arrowright':
+        youtubePlayer.seekTo(youtubePlayer.getCurrentTime() + 5, true);
+        showStatusMessage('⏩ +5s');
+        break;
+    }
+  } catch (e) { }
+});
+
+// Save progress periodically
+setInterval(() => {
+  if (youtubePlayer && currentVideoId && playerReady && youtubePlayer.getPlayerState() === 1) {
+    const currentTime = youtubePlayer.getCurrentTime();
+    localStorage.setItem(getProgressKey(currentVideoId), currentTime);
+  }
+}, 10000);
