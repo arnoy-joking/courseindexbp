@@ -1,5 +1,5 @@
 // Global variables
-let currentVideoId = 'RUQcm3vIbWo'; // Default video ID
+let currentVideoId = 'qxOkaU6RVz4'; // Default video ID
 let youtubePlayer;
 
 // Function to show status messages
@@ -260,3 +260,4 @@ window.addEventListener('load', () => {
     showStatusMessage('Welcome to Bondi Pathshala! Select a class to begin.');
   }, 1000);
 });
+
